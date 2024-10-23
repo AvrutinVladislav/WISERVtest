@@ -18,12 +18,10 @@ struct NewRecordView: View {
     @State private var systoliticsPressure = "222"
     @State private var diastoliticsPressure = "111"
     @State private var pulse = ""
-    @State private var date = ""
-    @State private var time = ""
     @State private var note = ""
     @State private var textEditorHeight: CGFloat = 45
-    @State private var selectedDate: Date = Date()
-    @State private var selectedTime: Date = Date()
+    @State private var selectedDate: Date?
+    @State private var selectedTime: Date?
     @State private var showDatePicker = false
     @State private var showTimePicker = false
     
@@ -86,46 +84,11 @@ struct NewRecordView: View {
                 VStack {
                     Text(Resource.Strings.date)
                         .font(.custom(Resource.Font.interRegular, size: 16))
-                    VStack {
-                        Button(action: {
-                            showDatePicker = true
-                        }, label: {
-                            Text(date.isEmpty ? viewModel.prepareDateToPrompt() : date)
-                                .foregroundStyle(date.isEmpty ? .textFieldPlaceholder : .mainBlack)
-                                .padding(16)
-                                .frame(width: 159)
-                        })
-                        .sheet(isPresented: $showDatePicker) {
-                            DatePicker(
-                                "",
-                                selection: $selectedDate,
-                                displayedComponents: .date
-                            )
-                            .datePickerStyle(GraphicalDatePickerStyle())
-                            .labelsHidden()
-                            HStack {
-                                Spacer()
-                                Button(action: {
-                                    showDatePicker = false
-                                }, label: {
-                                    Text("Cancel")
-                                        .font(.custom(Resource.Font.interRegular, size: 14))
-                                        .foregroundStyle(.lightGrayText)
-                                        .padding(.trailing, 34)
-                                })
-                                
-                                Button(action: {
-                                    date = dateFormatter.string(from: selectedDate)
-                                    showDatePicker = false
-                                }, label: {
-                                    Text("OK".uppercased())
-                                        .font(.custom(Resource.Font.interMedium, size: 14))
-                                        .foregroundStyle(.saveNewRecordButton)
-                                        .padding(.trailing, 34)
-                                })
-                            }
-                        }
-                    }
+
+                    PickerWithButtons(showPicker: $showDatePicker,
+                                      date: $selectedDate,
+                                      prompt: viewModel.prepareDateToPrompt(),
+                                      isDate: true)
                 }
                 
                 Spacer(minLength: 24)
@@ -134,49 +97,10 @@ struct NewRecordView: View {
                 VStack {
                     Text(Resource.Strings.time)
                         .font(.custom(Resource.Font.interRegular, size: 16))
-                    VStack {
-                        Button(action: {
-                            showTimePicker = true
-                        }, label: {
-                            Text(time.isEmpty ? viewModel.prepareTimeToPrompt() : time)
-                                .foregroundStyle(time.isEmpty ? .textFieldPlaceholder : .mainBlack)
-                                .padding(16)
-                                .frame(width: 159)
-                        })
-                        .sheet(isPresented: $showTimePicker) {
-                            VStack {
-                                DatePicker(
-                                    "",
-                                    selection: $selectedTime,
-                                    displayedComponents: .hourAndMinute
-                                )
-                                .datePickerStyle(.wheel)
-                                .labelsHidden()
-                                
-                                HStack {
-                                    Spacer()
-                                    Button(action: {
-                                        showTimePicker = false
-                                    }, label: {
-                                        Text("Cancel")
-                                            .font(.custom(Resource.Font.interRegular, size: 14))
-                                            .foregroundStyle(.lightGrayText)
-                                            .padding(.trailing, 34)
-                                    })
-                                    
-                                    Button(action: {
-                                        time = timeFormatter.string(from: selectedTime)
-                                        showTimePicker = false
-                                    }, label: {
-                                        Text("OK".uppercased())
-                                            .font(.custom(Resource.Font.interMedium, size: 14))
-                                            .foregroundStyle(.saveNewRecordButton)
-                                            .padding(.trailing, 34)
-                                    })
-                                }
-                            }
-                        }
-                    }
+                    PickerWithButtons(showPicker: $showTimePicker,
+                                      date: $selectedTime,
+                                      prompt: viewModel.prepareTimeToPrompt(),
+                                      isDate: false)
                 }
             }
             .padding(.init(top: 24, leading: 16, bottom: 24, trailing: 16))
@@ -241,7 +165,7 @@ struct NewRecordView: View {
     }
 }
 
-//MARK: - Custom views
+//MARK: - Views
 @ViewBuilder private func customTextField(_ text: Binding<String>, _ prompt: String, _ width: CGFloat, _ isFocused: FocusState<Bool>.Binding) -> some View {
     TextField("",
               text: text,
