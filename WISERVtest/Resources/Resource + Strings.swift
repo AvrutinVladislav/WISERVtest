@@ -25,5 +25,10 @@ enum Resource {
         static let mmHg = "мм рт. ст."
         static let bitsPerMinute = "уд/мин"
         static let addData = "Добавить данные"
+        
+        static let bloodPressure = "Кровяное давление"
+        static let date = "Дата измерений"
+        static let time = "Время измерений"
+        static let save = "Сохранить"
     }
 }

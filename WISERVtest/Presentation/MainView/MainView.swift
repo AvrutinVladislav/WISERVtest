@@ -11,7 +11,10 @@ import Charts
 struct MainView: View {
     
     @StateObject private var viewModel = MainViewModel()
+    @State private var path: [String] = []
+    
     @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.presentationMode) var presentationMode
 
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \Item.date, ascending: true)],
@@ -19,13 +22,19 @@ struct MainView: View {
     private var items: FetchedResults<Item>
 
     var body: some View {
-        NavigationView {
+        NavigationStack(path: $path) {
             ScrollView {
                 VStack {
-                    headerView()
+                    headerView(path: $path, destination: Resource.Destinations.newRecord)
                     timeSelect()
                     previewData(viewModel, items)
                     notes(viewModel, items)
+                }
+                .navigationDestination(for: String.self) { value in
+                    if value == Resource.Destinations.newRecord {
+                        NewRecordView()
+                            .customNavBar(title: Resource.Strings.addData)
+                    }
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -34,6 +43,7 @@ struct MainView: View {
     }
 }
 
+//MARK: - Notes
 @ViewBuilder private func notes(_ viewModel: MainViewModel, _ items: FetchedResults<Item>) -> some View {
     VStack {
         HStack {
@@ -56,7 +66,7 @@ struct MainView: View {
             HStack {
                 Text(viewModel.prepareDate(items: items))
                     .padding(.leading, 16)
-                    .foregroundStyle(.lightGray)
+                    .foregroundStyle(.lightGrayText)
                     .font(.custom(Resource.Font.interRegular, size: 12))
                 Spacer()
             }
@@ -67,7 +77,7 @@ struct MainView: View {
                  : viewModel.prepareNote(items: items))
             .padding(.init(top: 0, leading: 16, bottom: 16, trailing: 16))
             .font(.custom(Resource.Font.interRegular, size: 14))
-            .foregroundStyle(viewModel.isNoteEmpty(items: items) ? .lightGray : .black)
+            .foregroundStyle(viewModel.isNoteEmpty(items: items) ? .lightGrayText : .mainBlack)
             Spacer()
         }
     }
@@ -76,18 +86,19 @@ struct MainView: View {
     .padding(16)
 }
 
+//MARK: - Grafic and data
 @ViewBuilder private func previewData(_ viewModel: MainViewModel, _ items: FetchedResults<Item>) -> some View {
     VStack {
         HStack {
             VStack(alignment: .leading) {
                 Text(Resource.Strings.pressure)
                     .font(.custom(Resource.Font.interRegular, size: 12))
-                    .foregroundStyle(.lightGray)
+                    .foregroundStyle(.lightGrayText)
                     .padding(.bottom, 16)
                 Text(Resource.Strings.pulse)
                     .frame(maxWidth: .infinity)
                     .font(.custom(Resource.Font.interRegular, size: 12))
-                    .foregroundStyle(.lightGray)
+                    .foregroundStyle(.lightGrayText)
                     .multilineTextAlignment(.trailing)
             }
             .frame(width: 60)
@@ -100,7 +111,7 @@ struct MainView: View {
                         .font(.custom(Resource.Font.interMedium, size: 18))
                     Text(Resource.Strings.mmHg)
                         .font(.custom(Resource.Font.interRegular, size: 12))
-                        .foregroundStyle(.lightGray)
+                        .foregroundStyle(.lightGrayText)
                     Spacer()
                 }
                 .padding(.init(top: 0, leading: 0, bottom: 8, trailing: 0))
@@ -111,7 +122,7 @@ struct MainView: View {
                         .font(.custom(Resource.Font.interMedium, size: 18))
                     Text(Resource.Strings.bitsPerMinute)
                         .font(.custom(Resource.Font.interRegular, size: 12))
-                        .foregroundStyle(.lightGray)
+                        .foregroundStyle(.lightGrayText)
                     Spacer()
                 }
             }
@@ -120,7 +131,7 @@ struct MainView: View {
         HStack {
             Text(Resource.Strings.today)
                 .font(.custom(Resource.Font.interRegular, size: 10))
-                .foregroundStyle(.black)
+                .foregroundStyle(.mainBlack)
             Spacer()
         }
         .padding(.init(top: 16, leading: 16, bottom: 0, trailing: -16))
@@ -151,7 +162,7 @@ struct MainView: View {
                     .font(.custom(Resource.Font.interRegular, size: 12))
                     .foregroundStyle(.orange)
                     .overlay(RoundedRectangle(cornerRadius: 16)
-                        .stroke(.orange)
+                        .stroke(.orangeButton)
                     )
             }
             .padding(.init(top: 16, leading: 0, bottom: 24, trailing: 16))
@@ -162,6 +173,7 @@ struct MainView: View {
     .padding(17)
 }
 
+//MARK: - Time selector
 @ViewBuilder private func timeSelect() -> some View {
     HStack {
         timeButton(Resource.Strings.day, true)
@@ -175,7 +187,8 @@ struct MainView: View {
     .clipShape(Capsule())
 }
 
-@ViewBuilder private func headerView() -> some View {
+//MARK: - Header
+@ViewBuilder private func headerView(path: Binding<[String]>, destination: String) -> some View {
     VStack {
         HStack {
             Spacer()
@@ -194,7 +207,7 @@ struct MainView: View {
                 Text(Date(), formatter: itemFormatter)
             }
             .frame(maxWidth: .infinity)
-
+            
             Spacer()
             ZStack {
                 Spacer()
@@ -206,26 +219,31 @@ struct MainView: View {
                 .offset(.init(width: -30, height: -10))
                 .rotationEffect(Angle(degrees: 180))
                 
-                Image(.addPressure)
+                Button {
+                    path.wrappedValue.append(destination)
+                } label: {
+                    Image(.addPressure)
+                }
             }
-            
         }
     }
 }
 
+//MARK: - Custom elements
 @ViewBuilder private func timeButton(_ title: String, _ isSelected: Bool) -> some View {
     Button {
         
     } label: {
         Text(title)
             .font(.custom(isSelected ? Resource.Font.interMedium : Resource.Font.interRegular, size: 14))
-            .foregroundColor(Color.black)
+            .foregroundColor(.mainBlack)
     }
     .frame(width: 99, height: 26)
     .background(isSelected ? Color.timeButtonSelect : Color.white)
     .clipShape(Capsule())
 }
 
+//MARK: - Extension
 extension MainView {
     func deleteItems(offsets: IndexSet) {
         CoreDataManager().deleteItems(offsets: offsets, viewContext: viewContext, items: Array(items))
