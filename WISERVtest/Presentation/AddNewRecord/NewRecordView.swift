@@ -47,34 +47,55 @@ struct NewRecordView: View {
     
     //MARK: - Body
     var body: some View {
-        VStack {
-            blodPressureAndPulse(systoliticsPressure: $systoliticsPressure,
-                                 isFocusedSystolitics: $isFocusedSystolitics,
-                                 diastoliticsPressure: $diastoliticsPressure,
-                                 isFocusedDiastolitics: $isFocusedDiastolitics,
-                                 pulse: $pulse,
-                                 isFocusedPulse: $isFocusedPulse)
-           
-            dateAndTime(showDatePicker: $showDatePicker,
-                        showTimePicker: $showTimePicker,
-                        viewModel: viewModel,
-                        selectedDate: $selectedDate,
-                        selectedTime: $selectedTime)
-
-            noteTextEditor(note: $note,
-                 isFocusedTextEditor: $isFocusedTextEditor,
-                 textEditorHeight: textEditorHeight,
-                 updateTextEditorHeight: updateTextEditorHeight)
-            
-            Spacer()
-            
-            saveButton(systoliticsPressure: $systoliticsPressure,
-                       diastoliticsPressure: $diastoliticsPressure)
+        ZStack {
+            GradientView(colors: [.gradientRed],
+                         startPoint: .trailing,
+                         endPoint: .leading,
+                         rotation: Angle(degrees: 180),
+                         width: 78,
+                         height: 78,
+                         blurRadius: 50,
+                         xOffset: 42,
+                         yOffset: 50)
+            GradientView(colors: [.gradientYellow],
+                         startPoint: .trailing,
+                         endPoint: .leading,
+                         rotation: Angle(degrees: 180),
+                         width: 138,
+                         height: 138,
+                         blurRadius: 100,
+                         xOffset: 42,
+                         yOffset: 50)
+            VStack {
+                blodPressureAndPulse(systoliticsPressure: $systoliticsPressure,
+                                     isFocusedSystolitics: $isFocusedSystolitics,
+                                     diastoliticsPressure: $diastoliticsPressure,
+                                     isFocusedDiastolitics: $isFocusedDiastolitics,
+                                     pulse: $pulse,
+                                     isFocusedPulse: $isFocusedPulse)
+                
+                dateAndTime(showDatePicker: $showDatePicker,
+                            showTimePicker: $showTimePicker,
+                            viewModel: viewModel,
+                            selectedDate: $selectedDate,
+                            selectedTime: $selectedTime)
+                
+                noteTextEditor(note: $note,
+                               isFocusedTextEditor: $isFocusedTextEditor,
+                               textEditorHeight: textEditorHeight,
+                               updateTextEditorHeight: updateTextEditorHeight)
+                
+                Spacer()
+                
+                saveButton(systoliticsPressure: $systoliticsPressure,
+                           diastoliticsPressure: $diastoliticsPressure)
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(.mainBackground))
         .onAppear {
             updateTextEditorHeight(note)
+            
         }
     }
 }
@@ -171,7 +192,7 @@ struct NewRecordView: View {
             Spacer()
         }
         .padding(.horizontal, 16)
-        ZStack {
+        VStack {
             TextEditor(text: note)
                 .focused(isFocusedTextEditor)
                 .scrollContentBackground(.hidden)
@@ -183,22 +204,20 @@ struct NewRecordView: View {
                 .onChange(of: note.wrappedValue) { newValue in
                     updateTextEditorHeight(newValue)
                 }
-                .background(note.wrappedValue.isEmpty ? Color.clear : Color.white)
+                .background(isFocusedTextEditor.wrappedValue || !note.wrappedValue.isEmpty ? Color.white : Color.clear)
                 .cornerRadius(14)
                 .padding(16)
         }
         .frame(height: textEditorHeight)
         .animation(.easeInOut, value: note.wrappedValue)
-        .background(Color.mainBackground)
+        .background(Color.clear)
         Spacer()
     }
 }
 
 //MARK: - Save Button
 @ViewBuilder private func saveButton(systoliticsPressure: Binding<String>,
-                                     diastoliticsPressure: Binding<String>
-//                                     action: @escaping () -> Void // добавить функцию для сохранения в базу
-) -> some View {
+                                     diastoliticsPressure: Binding<String>) -> some View {
     HStack {
         Button {
             
@@ -209,12 +228,11 @@ struct NewRecordView: View {
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 8)
                 .background(systoliticsPressure.wrappedValue.isEmpty
-                            && diastoliticsPressure.wrappedValue.isEmpty ? .saveNewRecordButton.opacity(0.3)
+                            || diastoliticsPressure.wrappedValue.isEmpty ? .saveNewRecordButton.opacity(0.3)
                                                             : .saveNewRecordButton)
                 .clipShape(RoundedRectangle(cornerRadius: 14))
-                .disabled(systoliticsPressure.wrappedValue.isEmpty
-                          && diastoliticsPressure.wrappedValue.isEmpty)
         }
+        .disabled(systoliticsPressure.wrappedValue.isEmpty || diastoliticsPressure.wrappedValue.isEmpty)
     }
     .padding(.init(top: 0, leading: 16, bottom: 24, trailing: 16))
 }
@@ -239,7 +257,7 @@ struct NewRecordView: View {
         .background(.white)
         .cornerRadius(16)
         .font(.custom(Resource.Font.interRegular, size: 18))
-        
+        .keyboardType(.numberPad)
 }
 
 //MARK: - Extension
@@ -247,7 +265,7 @@ extension NewRecordView {
     func updateTextEditorHeight(_ newText: String) {
         let lineHeight: CGFloat = 20
         let newHeight = max(45, CGFloat(newText.split(separator: "\n").count) * lineHeight)
-        $textEditorHeight.wrappedValue = newHeight
+        $textEditorHeight.wrappedValue = newHeight > 250 ? 250 : newHeight
     }
 }
 

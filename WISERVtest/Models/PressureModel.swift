@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PressureModel {
+struct PressureModel: Identifiable {
     let id: String
     let systolic: Int
     let daistolic: Int

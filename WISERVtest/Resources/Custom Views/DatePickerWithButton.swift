@@ -24,6 +24,7 @@ struct PickerWithButtons: View {
                     .foregroundStyle($date.wrappedValue == nil ? .textFieldPlaceholder : .mainBlack)
                     .padding(16)
                     .frame(width: 159)
+                    .multilineTextAlignment(.leading)
             })
             .sheet(isPresented: $showPicker) {
                 VStack {
