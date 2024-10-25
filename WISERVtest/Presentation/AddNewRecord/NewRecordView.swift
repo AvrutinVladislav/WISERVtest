@@ -9,10 +9,14 @@ import SwiftUI
 
 struct NewRecordView: View {
     
+    @EnvironmentObject var manager: DataManager
+    @Environment(\.managedObjectContext) var viewContext
+    
     init() {
         UITextView.appearance().textContainerInset = UIEdgeInsets(top: 10, left: 16, bottom: 10, right: 16)
         UITextView.appearance().tintColor = .black
     }
+    
     @StateObject private var viewModel = NewRecordViewModel()
     
     @State private var systoliticsPressure = ""
@@ -271,7 +275,17 @@ extension NewRecordView {
     }
     
     func saveButtonDidTap() {
-        
+        guard let systolic = Int16(systoliticsPressure),
+              let diastolic = Int16(diastoliticsPressure),
+              let pulse = Int16(pulse)
+        else { return }
+        CoreDataManager.shared.addItem(systolic: systolic,
+                                       diastolic: diastolic,
+                                       pulse: pulse,
+                                       date: viewModel.combineDateAndTime(date: selectedDate,
+                                                                          time: selectedTime),
+                                       note: note,
+                                       context: viewContext)
     }
 }
 

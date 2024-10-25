@@ -10,7 +10,7 @@ import SwiftUI
 
 final class MainViewModel: ObservableObject {
     
-    func getDate(items: FetchedResults<Item>) -> [PressureModel] {
+    func getDate(items: FetchedResults<Record>) -> [PressureModel] {
         var result: [PressureModel] = []
         items.forEach { item in
             result.append(PressureModel(id: item.id ?? "",
@@ -23,7 +23,7 @@ final class MainViewModel: ObservableObject {
         return result
     }
     
-    func getLastData(items: FetchedResults<Item>) -> PressureModel {
+    func getLastData(items: FetchedResults<Record>) -> PressureModel {
         if let item = items.last {
             return PressureModel(id: item.id ?? "",
                                  systolic: Int(item.systolic),
@@ -35,29 +35,29 @@ final class MainViewModel: ObservableObject {
         return PressureModel(id: "", systolic: 0, daistolic: 0, pulse: 0, date: Date(), note: "")
     }
     
-    func preparePressure(items: FetchedResults<Item>) -> String {
+    func preparePressure(items: FetchedResults<Record>) -> String {
         let pressure = getLastData(items: items)
         return "\(pressure.systolic) / \(pressure.daistolic)"
     }
     
-    func preparePulse(items: FetchedResults<Item>) -> String {
+    func preparePulse(items: FetchedResults<Record>) -> String {
         let pressure = getLastData(items: items)
         return "\(pressure.pulse ?? 0)"
     }
     
-    func prepareDate(items: FetchedResults<Item>) -> String {
+    func prepareDate(items: FetchedResults<Record>) -> String {
         let pressure = getLastData(items: items)
         let formatter = DateFormatter()
-        formatter.dateFormat = "MM.dd HH:mm"
+        formatter.dateFormat = "dd.MM HH:mm"
         return "\(formatter.string(from: pressure.date))"
     }
     
-    func isNoteEmpty(items: FetchedResults<Item>) -> Bool {
+    func isNoteEmpty(items: FetchedResults<Record>) -> Bool {
         guard let note = getLastData(items: items).note, !note.isEmpty else { return true }
         return false
     }
     
-    func prepareNote(items: FetchedResults<Item>) -> String {
+    func prepareNote(items: FetchedResults<Record>) -> String {
         guard let note = getLastData(items: items).note, !note.isEmpty else { return "" }
         return note
     }

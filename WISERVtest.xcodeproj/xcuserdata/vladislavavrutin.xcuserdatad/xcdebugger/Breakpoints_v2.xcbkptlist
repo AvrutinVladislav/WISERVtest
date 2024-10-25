@@ -7,47 +7,33 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "A8DD9AF8-21C3-457D-9136-A58A399DFC5E"
+            uuid = "DAC80789-1C6E-49CA-AA22-A5101A8ECFB6"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "WISERVtest/Presentation/MainView/MainViewModel.swift"
+            filePath = "WISERVtest/Presentation/AddNewRecord/NewRecordView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "43"
-            endingLineNumber = "43"
-            landmarkName = "isNoteEmpty(items:)"
+            startingLineNumber = "282"
+            endingLineNumber = "282"
+            landmarkName = "saveButtonDidTap()"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "A8DD9AF8-21C3-457D-9136-A58A399DFC5E - b23150fcbb2e724d"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "WISERVtest.MainViewModel.prepareNoteIcon(items: SwiftUI.FetchedResults&lt;WISERVtest.Item&gt;) -&gt; Swift.Bool"
-                  moduleName = "WISERVtest.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/vladislavavrutin/Doc/WISERVtest/WISERVtest/Presentation/MainView/MainViewModel.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "43"
-                  endingLineNumber = "43">
-               </Location>
-               <Location
-                  uuid = "A8DD9AF8-21C3-457D-9136-A58A399DFC5E - b23150fcbb2e724d"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "WISERVtest.MainViewModel.prepareNoteIcon(items: SwiftUI.FetchedResults&lt;WISERVtest.Item&gt;) -&gt; Swift.Bool"
-                  moduleName = "WISERVtest.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/vladislavavrutin/Doc/WISERVtest/WISERVtest/Presentation/MainView/MainViewModel.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "43"
-                  endingLineNumber = "43">
-               </Location>
-            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "D8FA0557-F76B-4F00-92B9-367A0F72587F"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "WISERVtest/Presentation/AddNewRecord/NewRecordView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "278"
+            endingLineNumber = "278"
+            landmarkName = "saveButtonDidTap()"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

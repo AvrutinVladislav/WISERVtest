@@ -9,12 +9,12 @@ import SwiftUI
 
 @main
 struct WISERVtestApp: App {
-    let persistenceController = PersistenceController.shared
+    @StateObject private var manager: DataManager = DataManager()
 
     var body: some Scene {
         WindowGroup {
             MainView()
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                .environment(\.managedObjectContext, manager.container.viewContext)
         }
     }
 }

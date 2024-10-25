@@ -10,16 +10,16 @@ import Charts
 
 struct MainView: View {
     
+    @Environment(\.managedObjectContext) private var viewContext
+    @EnvironmentObject var manager: DataManager
+    
     @StateObject private var viewModel = MainViewModel()
     @State private var path: [String] = []
-    
-    @Environment(\.managedObjectContext) private var viewContext
-    @Environment(\.presentationMode) var presentationMode
 
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Item.date, ascending: true)],
+        sortDescriptors: [],
         animation: .default)
-    private var items: FetchedResults<Item>
+    private var records: FetchedResults<Record>
     
     var body: some View {
         NavigationStack(path: $path) {
@@ -48,11 +48,11 @@ struct MainView: View {
                                        destination: Resource.Destinations.newRecord)
                             timeSelect()
                             previewData(viewModel: viewModel,
-                                        items: items,
-                                        data: viewModel.getDate(items: items),
+                                        items: records,
+                                        data: viewModel.getDate(items: records),
                                         path: $path,
                                         destination: Resource.Destinations.newRecord)
-                            notes(viewModel, items)
+                            notes(viewModel, records)
                         }
                     }
                 }
@@ -116,12 +116,13 @@ struct MainView: View {
 
 //MARK: - Chart and data
 @ViewBuilder private func previewData(viewModel: MainViewModel,
-                                      items: FetchedResults<Item>,
+                                      items: FetchedResults<Record>,
                                       data: [PressureModel],
                                       path: Binding<[String]>,
                                       destination: String) -> some View {
     VStack {
-        if viewModel.getLastData(items: items).systolic != 0 && viewModel.getLastData(items: items).daistolic != 0 {
+        if viewModel.getLastData(items: items).systolic != 0
+            && viewModel.getLastData(items: items).daistolic != 0 {
             HStack {
                 VStack(alignment: .leading) {
                     Text(Resource.Strings.pressure)
@@ -139,7 +140,6 @@ struct MainView: View {
                 
                 VStack {
                     HStack {
-                        
                         Text(viewModel.preparePressure(items: items))
                             .font(.custom(Resource.Font.interMedium, size: 18))
                         Text(Resource.Strings.mmHg)
@@ -150,7 +150,6 @@ struct MainView: View {
                     .padding(.init(top: 0, leading: 0, bottom: 8, trailing: 0))
                     
                     HStack {
-                        
                         Text(viewModel.preparePulse(items: items))
                             .font(.custom(Resource.Font.interMedium, size: 18))
                         Text(Resource.Strings.bitsPerMinute)
@@ -199,12 +198,12 @@ struct MainView: View {
                 x: .value("", formateDateFromChart(point.date)),
                 y: .value("Systolic", point.systolic)
             )
-            .foregroundStyle(.red)
+            .foregroundStyle(.systolitic)
             .lineStyle(StrokeStyle(lineWidth: 2))
             .interpolationMethod(.catmullRom)
             .symbol {
                 Circle()
-                    .fill(Color.red)
+                    .fill(Color.systolitic)
                     .frame(width: 10)
             }
 
@@ -212,12 +211,12 @@ struct MainView: View {
                 x: .value("", formateDateFromChart(point.date)),
                 y: .value("Diastolic", point.daistolic)
             )
-            .foregroundStyle(.blue)
+            .foregroundStyle(.diastolitic)
             .lineStyle(StrokeStyle(lineWidth: 2))
             .interpolationMethod(.catmullRom)
             .symbol {
                 Circle()
-                    .fill(Color.blue)
+                    .fill(Color.diastolitic)
                     .frame(width: 10)
             }
         }
@@ -252,7 +251,8 @@ struct MainView: View {
 }
 
 //MARK: - Notes
-@ViewBuilder private func notes(_ viewModel: MainViewModel, _ items: FetchedResults<Item>) -> some View {
+@ViewBuilder private func notes(_ viewModel: MainViewModel,
+                                _ items: FetchedResults<Record>) -> some View {
     VStack {
         HStack {
             Image(.edit)
@@ -281,7 +281,7 @@ struct MainView: View {
         }
         
         HStack {
-            Text(viewModel.isNoteEmpty(items: items) ?Resource.Strings.healthСondition
+            Text(viewModel.isNoteEmpty(items: items) ? Resource.Strings.healthСondition
                  : viewModel.prepareNote(items: items))
             .padding(.init(top: 0, leading: 16, bottom: 16, trailing: 16))
             .font(.custom(Resource.Font.interRegular, size: 14))
@@ -317,7 +317,7 @@ func formateDateFromChart(_ hour: Date) -> Int {
 }
 
 func getData(_ viewModel: MainViewModel,
-             _ items: FetchedResults<Item>) -> [PressureModel] {
+             _ items: FetchedResults<Record>) -> [PressureModel] {
     return viewModel.getDate(items: items)
 }
 
