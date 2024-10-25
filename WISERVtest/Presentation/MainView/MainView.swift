@@ -46,6 +46,7 @@ struct MainView: View {
                         VStack {
                             headerView(path: $path,
                                        destination: Resource.Destinations.newRecord)
+                            .padding(.bottom, 24)
                             timeSelect()
                             previewData(viewModel: viewModel,
                                         items: records,
@@ -87,15 +88,15 @@ struct MainView: View {
                     .fontWeight(.medium)
                 Text(Date(), formatter: itemFormatter)
             }
-            .frame(maxWidth: .infinity)
-            
+            .offset(x: 30)
             Spacer()
-            
             Button {
                 path.wrappedValue.append(destination)
             } label: {
                 Image(.addPressure)
             }
+            .frame(maxWidth: 32, maxHeight: 32)
+            .padding(.trailing, 16)
         }
     }
 }
@@ -130,7 +131,7 @@ struct MainView: View {
                         .foregroundStyle(.lightGrayText)
                         .padding(.bottom, 16)
                     Text(Resource.Strings.pulse)
-                        .frame(maxWidth: .infinity)
+                        .frame(width: 58, alignment: .leading)
                         .font(.custom(Resource.Font.interRegular, size: 12))
                         .foregroundStyle(.lightGrayText)
                         .multilineTextAlignment(.trailing)
@@ -159,11 +160,18 @@ struct MainView: View {
                     }
                 }
             }
+            HStack {
+                Text(Resource.Strings.today)
+                    .font(.custom(Resource.Font.interRegular, size: 10))
+                    .foregroundStyle(.lightGrayText)
+                Spacer()
+            }
+            .padding(.init(top: 0, leading: 16, bottom: 0, trailing: 16))
         }
         else {
             VStack(spacing: 16) {
                 HStack {
-                    Text("No data")
+                    Text("Нет данных")
                         .font(.custom(Resource.Font.interMedium, size: 18))
                         .foregroundStyle(.mainBlack)
                     Spacer()
