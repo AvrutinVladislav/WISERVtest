@@ -20,7 +20,7 @@ enum Resource {
         static let systolitics = "Систолическое"
         static let diastolics = "Диастолическое"
         static let pulse = "Пульс"
-        static let note = "Заметки"
+        static let note = "Заметка"
         static let healthСondition = "Опиши свое состояние"
         static let mmHg = "мм рт. ст."
         static let bitsPerMinute = "уд/мин"

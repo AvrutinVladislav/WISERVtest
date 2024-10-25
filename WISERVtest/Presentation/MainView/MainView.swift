@@ -77,7 +77,6 @@ struct MainView: View {
             Image(.logo)
             Text(Resource.Strings.title)
                 .font(.custom(Resource.Font.exo2Medium, size: 16))
-                .fontWeight(.medium)
             Spacer()
         }
         HStack {
@@ -233,8 +232,29 @@ struct MainView: View {
         .chartYAxis {
             AxisMarks(values: [0, 50, 100, 150, 200])
         }
+        .chartPlotStyle { plotArea in
+            plotArea
+                .overlay(
+                    VStack {
+                        Spacer()
+                        Rectangle()
+                            .fill(Color.black)
+                            .frame(height: 1)
+                    }
+                )
+                .overlay(
+                    HStack {
+                        Spacer()
+                        Rectangle()
+                            .fill(Color.black)
+                            .frame(width: 1)
+                    }
+                )
+        }
         .chartXAxis {
-            AxisMarks(values: [0, 6, 12, 18, 24])
+            AxisMarks(values: [0, 6, 12, 18, 24]) {
+                AxisValueLabel()
+            }
         }
 
         HStack {
@@ -331,7 +351,8 @@ func getData(_ viewModel: MainViewModel,
 
 private let itemFormatter: DateFormatter = {
     let formatter = DateFormatter()
-    formatter.dateStyle = .short
+    formatter.locale = Locale(identifier: "ru_RU")
+    formatter.dateFormat = "dd MMMM yyyy"
     return formatter
 }()
 

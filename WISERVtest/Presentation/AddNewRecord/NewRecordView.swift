@@ -85,6 +85,7 @@ struct NewRecordView: View {
                             selectedTime: $selectedTime)
                 
                 noteTextEditor(note: $note,
+                               prompt: Resource.Strings.healthСondition,
                                isFocusedTextEditor: $isFocusedNote,
                                textEditorHeight: noteHeight,
                                updateTextEditorHeight: updateTextEditorHeight)
@@ -115,6 +116,8 @@ struct NewRecordView: View {
     HStack {
         VStack {
             Text(Resource.Strings.bloodPressure)
+                .font(.custom(Resource.Font.interRegular, size: 16))
+                .foregroundStyle(.mainBlack)
             HStack {
                 VStack {
                     Text(Resource.Strings.systolitics)
@@ -141,6 +144,8 @@ struct NewRecordView: View {
         Spacer()
         VStack {
             Text(Resource.Strings.pulse)
+                .font(.custom(Resource.Font.interRegular, size: 16))
+                .foregroundStyle(.mainBlack)
             Spacer()
             customTextField(text: pulse,
                             prompt: "70",
@@ -163,6 +168,7 @@ struct NewRecordView: View {
         VStack {
             Text(Resource.Strings.date)
                 .font(.custom(Resource.Font.interRegular, size: 16))
+                .foregroundStyle(.mainBlack)
 
             PickerWithButtons(showPicker: showDatePicker,
                               date: selectedDate,
@@ -175,6 +181,7 @@ struct NewRecordView: View {
         VStack {
             Text(Resource.Strings.time)
                 .font(.custom(Resource.Font.interRegular, size: 16))
+                .foregroundStyle(.mainBlack)
             PickerWithButtons(showPicker: showTimePicker,
                               date: selectedTime,
                               prompt: viewModel.prepareTimeToPrompt(),
@@ -186,6 +193,7 @@ struct NewRecordView: View {
 
 //MARK: - Note
 @ViewBuilder private func noteTextEditor(note: Binding<String>,
+                                         prompt: String,
                                          isFocusedTextEditor: FocusState<Bool>.Binding,
                                          textEditorHeight: CGFloat,
                                          updateTextEditorHeight: @escaping (String) -> Void
@@ -197,21 +205,35 @@ struct NewRecordView: View {
             Spacer()
         }
         .padding(.horizontal, 16)
-        VStack {
-            TextEditor(text: note)
-                .focused(isFocusedTextEditor)
-                .scrollContentBackground(.hidden)
-                .frame(minHeight: 45, maxHeight: textEditorHeight)
-                .overlay {
-                    RoundedRectangle(cornerRadius: 14)
-                        .stroke(!isFocusedTextEditor.wrappedValue ? Color.clear : Color.mainBlack, lineWidth: 1)
+        ZStack {
+            if note.wrappedValue.isEmpty {
+                HStack {
+                    Text(prompt)
+                        .padding(16)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .font(.custom(Resource.Font.interRegular, size: 18))
+                        .foregroundStyle(.textFieldPlaceholder)
+                        .background(.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 14))
                 }
-                .onChange(of: note.wrappedValue) { newValue in
-                    updateTextEditorHeight(newValue)
-                }
-                .background(isFocusedTextEditor.wrappedValue || !note.wrappedValue.isEmpty ? Color.white : Color.clear)
-                .cornerRadius(14)
-                .padding(16)
+                .padding(.horizontal, 16)
+            }
+                TextEditor( text: note)
+                    .font(.custom(Resource.Font.interRegular, size: 18))
+                    .foregroundStyle(.mainBlack)
+                    .focused(isFocusedTextEditor)
+                    .scrollContentBackground(.hidden)
+                    .frame(minHeight: 45, maxHeight: textEditorHeight)
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 14)
+                            .stroke(!isFocusedTextEditor.wrappedValue ? Color.clear : Color.mainBlack, lineWidth: 1)
+                    }
+                    .onChange(of: note.wrappedValue) { newValue in
+                        updateTextEditorHeight(newValue)
+                    }
+                    .background(isFocusedTextEditor.wrappedValue ? Color.white : Color.clear)
+                    .cornerRadius(14)
+                    .padding(16)
         }
         .frame(height: textEditorHeight)
         .animation(.easeInOut, value: note.wrappedValue)

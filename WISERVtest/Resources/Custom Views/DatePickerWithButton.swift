@@ -25,6 +25,9 @@ struct PickerWithButtons: View {
                     .padding(16)
                     .frame(width: 159)
                     .multilineTextAlignment(.leading)
+                    .font(.custom(Resource.Font.interRegular, size: 18))
+                    .background(.white)
+                    .clipShape(RoundedRectangle(cornerRadius: 14))
             })
             .sheet(isPresented: $showPicker) {
                 VStack {
