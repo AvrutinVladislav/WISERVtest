@@ -114,7 +114,7 @@ struct MainView: View {
     .clipShape(Capsule())
 }
 
-//MARK: - Chart and data
+//MARK: - Pressure and pulse data
 @ViewBuilder private func previewData(viewModel: MainViewModel,
                                       items: FetchedResults<Record>,
                                       data: [PressureModel],

@@ -231,7 +231,7 @@ struct NewRecordView: View {
                     .onChange(of: note.wrappedValue) { newValue in
                         updateTextEditorHeight(newValue)
                     }
-                    .background(isFocusedTextEditor.wrappedValue ? Color.white : Color.clear)
+                    .background(isFocusedTextEditor.wrappedValue || !note.wrappedValue.isEmpty ? Color.white : Color.clear)
                     .cornerRadius(14)
                     .padding(16)
         }
