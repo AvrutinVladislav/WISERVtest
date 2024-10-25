@@ -21,15 +21,6 @@ struct MainView: View {
         animation: .default)
     private var items: FetchedResults<Item>
     
-    var data: [PressureModel] = [
-        PressureModel(id: "4", systolic: 143, daistolic: 80, pulse: 85, date: Date().addingTimeInterval(-3600 * 2), note: nil),
-        PressureModel(id: "5", systolic: 49, daistolic: 64, pulse: 85, date: Date().addingTimeInterval(-3600 * 8), note: nil),
-        PressureModel(id: "6", systolic: 145, daistolic: 76, pulse: 85, date: Date().addingTimeInterval(-3600 * 5), note: nil),
-        PressureModel(id: "7", systolic: 134, daistolic: 66, pulse: 85, date: Date().addingTimeInterval(-3600 * 8), note: nil),
-    ]
-        
-    
-
     var body: some View {
         NavigationStack(path: $path) {
             ScrollView {
@@ -58,7 +49,7 @@ struct MainView: View {
                             timeSelect()
                             previewData(viewModel: viewModel,
                                         items: items,
-                                        data: data,
+                                        data: viewModel.getDate(items: items),
                                         path: $path,
                                         destination: Resource.Destinations.newRecord)
                             notes(viewModel, items)
@@ -130,53 +121,64 @@ struct MainView: View {
                                       path: Binding<[String]>,
                                       destination: String) -> some View {
     VStack {
-        HStack {
-            VStack(alignment: .leading) {
-                Text(Resource.Strings.pressure)
-                    .font(.custom(Resource.Font.interRegular, size: 12))
-                    .foregroundStyle(.lightGrayText)
-                    .padding(.bottom, 16)
-                Text(Resource.Strings.pulse)
-                    .frame(maxWidth: .infinity)
-                    .font(.custom(Resource.Font.interRegular, size: 12))
-                    .foregroundStyle(.lightGrayText)
-                    .multilineTextAlignment(.trailing)
-            }
-            .frame(width: 60)
-            .padding(.init(top: 24, leading: 16, bottom: 16, trailing: 8))
-            
-            VStack {
-                HStack {
-                    
-                    Text(viewModel.preparePressure(items: items))
-                        .font(.custom(Resource.Font.interMedium, size: 18))
-                    Text(Resource.Strings.mmHg)
+        if viewModel.getLastData(items: items).systolic != 0 && viewModel.getLastData(items: items).daistolic != 0 {
+            HStack {
+                VStack(alignment: .leading) {
+                    Text(Resource.Strings.pressure)
                         .font(.custom(Resource.Font.interRegular, size: 12))
                         .foregroundStyle(.lightGrayText)
-                    Spacer()
+                        .padding(.bottom, 16)
+                    Text(Resource.Strings.pulse)
+                        .frame(maxWidth: .infinity)
+                        .font(.custom(Resource.Font.interRegular, size: 12))
+                        .foregroundStyle(.lightGrayText)
+                        .multilineTextAlignment(.trailing)
                 }
-                .padding(.init(top: 0, leading: 0, bottom: 8, trailing: 0))
+                .frame(width: 60)
+                .padding(.init(top: 24, leading: 16, bottom: 16, trailing: 8))
                 
-                HStack {
+                VStack {
+                    HStack {
+                        
+                        Text(viewModel.preparePressure(items: items))
+                            .font(.custom(Resource.Font.interMedium, size: 18))
+                        Text(Resource.Strings.mmHg)
+                            .font(.custom(Resource.Font.interRegular, size: 12))
+                            .foregroundStyle(.lightGrayText)
+                        Spacer()
+                    }
+                    .padding(.init(top: 0, leading: 0, bottom: 8, trailing: 0))
                     
-                    Text(viewModel.preparePulse(items: items))
-                        .font(.custom(Resource.Font.interMedium, size: 18))
-                    Text(Resource.Strings.bitsPerMinute)
-                        .font(.custom(Resource.Font.interRegular, size: 12))
-                        .foregroundStyle(.lightGrayText)
-                    Spacer()
+                    HStack {
+                        
+                        Text(viewModel.preparePulse(items: items))
+                            .font(.custom(Resource.Font.interMedium, size: 18))
+                        Text(Resource.Strings.bitsPerMinute)
+                            .font(.custom(Resource.Font.interRegular, size: 12))
+                            .foregroundStyle(.lightGrayText)
+                        Spacer()
+                    }
                 }
             }
         }
-        
-        HStack {
-            Text(Resource.Strings.today)
-                .font(.custom(Resource.Font.interRegular, size: 10))
-                .foregroundStyle(.mainBlack)
-            Spacer()
+        else {
+            VStack(spacing: 16) {
+                HStack {
+                    Text("No data")
+                        .font(.custom(Resource.Font.interMedium, size: 18))
+                        .foregroundStyle(.mainBlack)
+                    Spacer()
+                }
+                .padding(.init(top: 24, leading: 16, bottom: 0, trailing: 16))
+                HStack {
+                    Text(Resource.Strings.today)
+                        .font(.custom(Resource.Font.interRegular, size: 10))
+                        .foregroundStyle(.lightGrayText)
+                    Spacer()
+                }
+                .padding(.horizontal, 16)
+            }
         }
-        .padding(.init(top: 0, leading: 16, bottom: 0, trailing: -16))
-        
         Divider()
             .padding(16)
         
@@ -307,22 +309,16 @@ struct MainView: View {
     .clipShape(Capsule())
 }
 
-//MARK: - Extension
-extension MainView {
-    func deleteItems(offsets: IndexSet) {
-        CoreDataManager().deleteItems(offsets: offsets, viewContext: viewContext, items: Array(items))
-    }
-    
-    func addItems() {
-        CoreDataManager().addItem(viewContext: viewContext)
-    }
-    
-    
-}
 func formateDateFromChart(_ hour: Date) -> Int {
     let formatter = DateFormatter()
     formatter.dateFormat = "HH"
-    return Int(formatter.string(from: hour))!
+    guard let date = Int(formatter.string(from: hour)) else { return 0 }
+    return date
+}
+
+func getData(_ viewModel: MainViewModel,
+             _ items: FetchedResults<Item>) -> [PressureModel] {
+    return viewModel.getDate(items: items)
 }
 
 private let itemFormatter: DateFormatter = {

@@ -10,9 +10,22 @@ import SwiftUI
 
 final class MainViewModel: ObservableObject {
     
+    func getDate(items: FetchedResults<Item>) -> [PressureModel] {
+        var result: [PressureModel] = []
+        items.forEach { item in
+            result.append(PressureModel(id: item.id ?? "",
+                                        systolic: Int(item.systolic),
+                                        daistolic: Int(item.daistolic),
+                                        pulse: Int(item.pulse),
+                                        date: item.date ?? Date(),
+                                        note: item.note))
+        }
+        return result
+    }
+    
     func getLastData(items: FetchedResults<Item>) -> PressureModel {
         if let item = items.last {
-            return PressureModel(id: item.id?.uuidString ?? "",
+            return PressureModel(id: item.id ?? "",
                                  systolic: Int(item.systolic),
                                  daistolic: Int(item.daistolic),
                                  pulse: Int(item.pulse),

@@ -19,13 +19,13 @@ struct NewRecordView: View {
     @State private var diastoliticsPressure = ""
     @State private var pulse = ""
     @State private var note = ""
-    @State private var textEditorHeight: CGFloat = 45
+    @State private var noteHeight: CGFloat = 45
     @State private var selectedDate: Date?
     @State private var selectedTime: Date?
     @State private var showDatePicker = false
     @State private var showTimePicker = false
     
-    @FocusState private var isFocusedTextEditor: Bool
+    @FocusState private var isFocusedNote: Bool
     @FocusState private var isFocusedSystolitics: Bool
     @FocusState private var isFocusedDiastolitics: Bool
     @FocusState private var isFocusedPulse: Bool
@@ -81,14 +81,15 @@ struct NewRecordView: View {
                             selectedTime: $selectedTime)
                 
                 noteTextEditor(note: $note,
-                               isFocusedTextEditor: $isFocusedTextEditor,
-                               textEditorHeight: textEditorHeight,
+                               isFocusedTextEditor: $isFocusedNote,
+                               textEditorHeight: noteHeight,
                                updateTextEditorHeight: updateTextEditorHeight)
                 
                 Spacer()
                 
                 saveButton(systoliticsPressure: $systoliticsPressure,
-                           diastoliticsPressure: $diastoliticsPressure)
+                           diastoliticsPressure: $diastoliticsPressure,
+                           saveToCoreData: saveButtonDidTap)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -217,10 +218,11 @@ struct NewRecordView: View {
 
 //MARK: - Save Button
 @ViewBuilder private func saveButton(systoliticsPressure: Binding<String>,
-                                     diastoliticsPressure: Binding<String>) -> some View {
+                                     diastoliticsPressure: Binding<String>,
+                                     saveToCoreData: @escaping () -> Void) -> some View {
     HStack {
         Button {
-            
+            saveToCoreData()
         } label: {
             Text(Resource.Strings.save)
                 .font(.custom(Resource.Font.interRegular, size: 18))
@@ -265,7 +267,11 @@ extension NewRecordView {
     func updateTextEditorHeight(_ newText: String) {
         let lineHeight: CGFloat = 20
         let newHeight = max(45, CGFloat(newText.split(separator: "\n").count) * lineHeight)
-        $textEditorHeight.wrappedValue = newHeight > 250 ? 250 : newHeight
+        $noteHeight.wrappedValue = newHeight > 250 ? 250 : newHeight
+    }
+    
+    func saveButtonDidTap() {
+        
     }
 }
 

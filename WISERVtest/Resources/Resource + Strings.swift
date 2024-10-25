@@ -31,4 +31,11 @@ enum Resource {
         static let time = "Время измерений"
         static let save = "Сохранить"
     }
+    
+    enum FocusedFields {
+        case systolics
+        case diastolics
+        case pulse
+        case note
+    }
 }
