@@ -23,31 +23,16 @@ struct NewRecordView: View {
     @State private var diastoliticsPressure = ""
     @State private var pulse = ""
     @State private var note = ""
+    @State private var date: Date?
+    
     @State private var noteHeight: CGFloat = 45
-    @State private var selectedDate: Date?
-    @State private var selectedTime: Date?
     @State private var showDatePicker = false
     @State private var showTimePicker = false
     
     @FocusState private var isFocusedNote: Bool
     @FocusState private var isFocusedSystolitics: Bool
     @FocusState private var isFocusedDiastolitics: Bool
-    @FocusState private var isFocusedPulse: Bool
-    
-    private var dateFormatter: DateFormatter {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .none
-        return formatter
-    }
-    
-    private var timeFormatter: DateFormatter {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .none
-        formatter.timeStyle = .short
-        return formatter
-    }
-    
+    @FocusState private var isFocusedPulse: Bool    
     
     //MARK: - Body
     var body: some View {
@@ -81,7 +66,7 @@ struct NewRecordView: View {
                 dateAndTime(showDatePicker: $showDatePicker,
                             showTimePicker: $showTimePicker,
                             viewModel: viewModel,
-                            selectedDate: $selectedDate)
+                            selectedDate: $date)
                 
                 noteTextEditor(note: $note,
                                prompt: Resource.Strings.healthСondition,
@@ -301,7 +286,7 @@ extension NewRecordView {
         CoreDataManager.shared.addItem(systolic: systolic,
                                        diastolic: diastolic,
                                        pulse: pulse,
-                                       date: selectedDate,
+                                       date: date,
                                        note: note,
                                        context: viewContext)
     }
