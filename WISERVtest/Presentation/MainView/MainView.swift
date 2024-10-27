@@ -17,7 +17,7 @@ struct MainView: View {
     @State private var path: [String] = []
 
     @FetchRequest(
-        sortDescriptors: [],
+        sortDescriptors: [NSSortDescriptor(keyPath: \Record.date, ascending: false)],
         animation: .default)
     private var records: FetchedResults<Record>
     
@@ -48,9 +48,7 @@ struct MainView: View {
                                        destination: Resource.Destinations.newRecord)
                             .padding(.bottom, 24)
                             timeSelect()
-                            previewData(viewModel: viewModel,
-                                        items: records,
-                                        data: viewModel.getDate(items: records),
+                            previewData(data: viewModel.getDate(items: records),
                                         path: $path,
                                         destination: Resource.Destinations.newRecord)
                             notes(viewModel, records)
@@ -65,6 +63,7 @@ struct MainView: View {
                 }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color(.mainBackground))
+            
         }
     }
 }
@@ -115,14 +114,12 @@ struct MainView: View {
 }
 
 //MARK: - Pressure and pulse data
-@ViewBuilder private func previewData(viewModel: MainViewModel,
-                                      items: FetchedResults<Record>,
-                                      data: [PressureModel],
+@ViewBuilder private func previewData(data: [PressureModel],
                                       path: Binding<[String]>,
                                       destination: String) -> some View {
     VStack {
-        if viewModel.getLastData(items: items).systolic != 0
-            && viewModel.getLastData(items: items).daistolic != 0 {
+        if data.first?.systolic != 0
+            && data.first?.daistolic != 0 {
             HStack {
                 VStack(alignment: .leading) {
                     Text(Resource.Strings.pressure)
@@ -140,7 +137,7 @@ struct MainView: View {
                 
                 VStack {
                     HStack {
-                        Text(viewModel.preparePressure(items: items))
+                        Text("\(data.first?.systolic ?? 0) / \(data.first?.daistolic ?? 0)")
                             .font(.custom(Resource.Font.interMedium, size: 18))
                         Text(Resource.Strings.mmHg)
                             .font(.custom(Resource.Font.interRegular, size: 12))
@@ -150,7 +147,7 @@ struct MainView: View {
                     .padding(.init(top: 0, leading: 0, bottom: 8, trailing: 0))
                     
                     HStack {
-                        Text(viewModel.preparePulse(items: items))
+                        Text("\(data.first?.pulse ?? 0)")
                             .font(.custom(Resource.Font.interMedium, size: 18))
                         Text(Resource.Strings.bitsPerMinute)
                             .font(.custom(Resource.Font.interRegular, size: 12))
