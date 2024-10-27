@@ -81,8 +81,7 @@ struct NewRecordView: View {
                 dateAndTime(showDatePicker: $showDatePicker,
                             showTimePicker: $showTimePicker,
                             viewModel: viewModel,
-                            selectedDate: $selectedDate,
-                            selectedTime: $selectedTime)
+                            selectedDate: $selectedDate)
                 
                 noteTextEditor(note: $note,
                                prompt: Resource.Strings.healthСondition,
@@ -161,9 +160,7 @@ struct NewRecordView: View {
 @ViewBuilder private func dateAndTime(showDatePicker: Binding<Bool>,
                                       showTimePicker: Binding<Bool>,
                                       viewModel: NewRecordViewModel,
-                                      selectedDate: Binding<Date?>,
-                                      selectedTime: Binding<Date?>
-) -> some View {
+                                      selectedDate: Binding<Date?>) -> some View {
     HStack {
         VStack {
             Text(Resource.Strings.date)
@@ -183,7 +180,7 @@ struct NewRecordView: View {
                 .font(.custom(Resource.Font.interRegular, size: 16))
                 .foregroundStyle(.mainBlack)
             PickerWithButtons(showPicker: showTimePicker,
-                              date: selectedTime,
+                              date: selectedDate,
                               prompt: viewModel.prepareTimeToPrompt(),
                               isDate: false)
         }
@@ -304,8 +301,7 @@ extension NewRecordView {
         CoreDataManager.shared.addItem(systolic: systolic,
                                        diastolic: diastolic,
                                        pulse: pulse,
-                                       date: viewModel.combineDateAndTime(date: selectedDate,
-                                                                          time: selectedTime),
+                                       date: selectedDate,
                                        note: note,
                                        context: viewContext)
     }

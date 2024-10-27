@@ -118,8 +118,8 @@ struct MainView: View {
                                       path: Binding<[String]>,
                                       destination: String) -> some View {
     VStack {
-        if data.first?.systolic != 0
-            && data.first?.daistolic != 0 {
+        if data.count > 0,
+           data.first?.systolic != 0 && data.first?.daistolic != 0 {
             HStack {
                 VStack(alignment: .leading) {
                     Text(Resource.Strings.pressure)
@@ -202,33 +202,16 @@ struct MainView: View {
                 x: .value("", formateDateFromChart(point.date)),
                 y: .value("Systolic", point.systolic)
             )
-            .foregroundStyle(.systolitic)
-            .lineStyle(StrokeStyle(lineWidth: 2))
-            .interpolationMethod(.catmullRom)
-            .symbol {
-                Circle()
-                    .fill(Color.systolitic)
-                    .frame(width: 10)
-            }
+            .foregroundStyle(.chartYellow)
 
             PointMark(
                 x: .value("", formateDateFromChart(point.date)),
                 y: .value("Diastolic", point.daistolic)
             )
-            .foregroundStyle(.diastolitic)
-            .lineStyle(StrokeStyle(lineWidth: 2))
-            .interpolationMethod(.catmullRom)
-            .symbol {
-                Circle()
-                    .fill(Color.diastolitic)
-                    .frame(width: 10)
-            }
+            .foregroundStyle(.chartCoral)
         }
         .frame(height: 150)
         .padding(16)
-        .chartYAxis {
-            AxisMarks(values: [0, 50, 100, 150, 200])
-        }
         .chartPlotStyle { plotArea in
             plotArea
                 .overlay(
@@ -248,11 +231,30 @@ struct MainView: View {
                     }
                 )
         }
+        .chartYAxis {
+                    AxisMarks(values: [0, 50, 100, 150, 200]) { value in
+                        AxisGridLine()
+                        AxisTick()
+                        AxisValueLabel {
+                            if let intValue = value.as(Int.self) {
+                                Text("\(intValue)")
+                            }
+                        }
+                    }
+                }
+        .chartYScale(domain: 0...200)
+        
         .chartXAxis {
-            AxisMarks(values: [0, 6, 12, 18, 24]) {
-                AxisValueLabel()
-            }
-        }
+                   AxisMarks(values: [0, 6, 12, 18, 24]) { value in
+                       AxisValueLabel {
+                           if let intValue = value.as(Int.self) {
+                               Text(intValue == 24 ? "0" : "\(intValue)")
+                           }
+                           
+                       }
+                   }
+               }
+        .chartXScale(domain: 0...24)
 
         HStack {
             Spacer()
