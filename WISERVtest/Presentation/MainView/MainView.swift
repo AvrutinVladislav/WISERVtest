@@ -125,7 +125,7 @@ struct MainView: View {
                     Text(Resource.Strings.pressure)
                         .font(.custom(Resource.Font.interRegular, size: 12))
                         .foregroundStyle(.lightGrayText)
-                        .padding(.bottom, 16)
+                        .padding(.bottom, 8)
                     Text(Resource.Strings.pulse)
                         .frame(width: 58, alignment: .leading)
                         .font(.custom(Resource.Font.interRegular, size: 12))
@@ -133,7 +133,7 @@ struct MainView: View {
                         .multilineTextAlignment(.trailing)
                 }
                 .frame(width: 60)
-                .padding(.init(top: 24, leading: 16, bottom: 16, trailing: 8))
+                .padding(.init(top: 8, leading: 16, bottom: 8, trailing: 8))
                 
                 VStack {
                     HStack {
@@ -144,7 +144,7 @@ struct MainView: View {
                             .foregroundStyle(.lightGrayText)
                         Spacer()
                     }
-                    .padding(.init(top: 0, leading: 0, bottom: 8, trailing: 0))
+//                    .padding(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
                     
                     HStack {
                         Text("\(data.first?.pulse ?? 0)")
@@ -162,10 +162,10 @@ struct MainView: View {
                     .foregroundStyle(.lightGrayText)
                 Spacer()
             }
-            .padding(.init(top: 0, leading: 16, bottom: 0, trailing: 16))
+            .padding(.horizontal, 16)
         }
         else {
-            VStack(spacing: 16) {
+            VStack(spacing: 8) {
                 HStack {
                     Text("Нет данных")
                         .font(.custom(Resource.Font.interMedium, size: 18))
@@ -183,7 +183,7 @@ struct MainView: View {
             }
         }
         Divider()
-            .padding(16)
+            .padding(8)
         
         HStack {
             Image(.ellipseRed)
@@ -198,6 +198,15 @@ struct MainView: View {
         }
 //MARK: - Chart
         Chart(data) { point in
+            RuleMark(y: .value("", 50))
+                                .lineStyle(StrokeStyle(lineWidth: 1, dash: [5]))
+                                .foregroundStyle(Color.blue)
+            RuleMark(y: .value("", 150))
+                               .lineStyle(StrokeStyle(lineWidth: 1, dash: [5]))
+                               .foregroundStyle(Color.red)
+            RuleMark(x: .value("", 0))
+                               .lineStyle(StrokeStyle(lineWidth: 1, dash: [5]))
+                               .foregroundStyle(Color.mainBlack.opacity(0.2))
             PointMark(
                 x: .value("", formateDateFromChart(point.date)),
                 y: .value("Systolic", point.systolic)
@@ -210,7 +219,7 @@ struct MainView: View {
             )
             .foregroundStyle(.chartCoral)
         }
-        .frame(height: 150)
+        .frame(height: 200)
         .padding(16)
         .chartPlotStyle { plotArea in
             plotArea
@@ -232,28 +241,30 @@ struct MainView: View {
                 )
         }
         .chartYAxis {
-                    AxisMarks(values: [0, 50, 100, 150, 200]) { value in
-                        AxisGridLine()
-                        AxisTick()
-                        AxisValueLabel {
-                            if let intValue = value.as(Int.self) {
-                                Text("\(intValue)")
-                            }
-                        }
+            AxisMarks(values: [0, 50, 100, 150, 200]) { value in
+                AxisGridLine(centered: true,
+                             stroke: StrokeStyle(lineWidth: 1, dash: [5]))
+                
+                AxisValueLabel {
+                    if let intValue = value.as(Int.self) {
+                        Text("\(intValue)")
                     }
                 }
+                .foregroundStyle(value.as(Int.self) == 50 ? Color.blue : (value.as(Int.self) == 150 ? Color.red : Color.mainBlack.opacity(0.5)))
+            }
+        }
         .chartYScale(domain: 0...200)
         
         .chartXAxis {
-                   AxisMarks(values: [0, 6, 12, 18, 24]) { value in
-                       AxisValueLabel {
-                           if let intValue = value.as(Int.self) {
-                               Text(intValue == 24 ? "0" : "\(intValue)")
-                           }
-                           
-                       }
-                   }
-               }
+            AxisMarks(values: [0, 6, 12, 18, 24]) { value in
+                AxisValueLabel {
+                    if let intValue = value.as(Int.self) {
+                        Text(intValue == 24 ? "0" : "\(intValue)")
+                    }
+                }
+                .foregroundStyle(Color.mainBlack.opacity(0.5))
+            }
+        }
         .chartXScale(domain: 0...24)
 
         HStack {
