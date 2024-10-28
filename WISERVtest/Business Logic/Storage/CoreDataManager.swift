@@ -14,11 +14,11 @@ public final class CoreDataManager {
     
     init() {}
     
-    func addItem(systolic: Int16, diastolic: Int16, pulse: Int16, date: Date?, note: String?, context: NSManagedObjectContext) {
+    func addItem(systolic: Int16, diastolic: Int16, pulse: Int16, date: Date?, note: String?, id: String, context: NSManagedObjectContext) {
         let context = context
         let newItem = Record(context: context)
         newItem.date = date
-        newItem.id = UUID().uuidString
+        newItem.id = id
         newItem.systolic = systolic
         newItem.daistolic = diastolic
         newItem.pulse = pulse

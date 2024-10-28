@@ -7,6 +7,11 @@
 
 import Foundation
 
+class RecordModel: ObservableObject {
+    @Published var healthData: [PressureModel] = []
+    
+    
+}
 struct PressureModel: Identifiable {
     let id: String
     var systolic: Int

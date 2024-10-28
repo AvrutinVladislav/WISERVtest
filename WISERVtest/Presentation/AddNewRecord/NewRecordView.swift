@@ -12,12 +12,14 @@ struct NewRecordView: View {
     @EnvironmentObject var manager: DataManager
     @Environment(\.managedObjectContext) var viewContext
     
-    init() {
+    init(allRecords: RecordModel) {
         UITextView.appearance().textContainerInset = UIEdgeInsets(top: 10, left: 16, bottom: 10, right: 16)
         UITextView.appearance().tintColor = .black
+        self.allRecords = allRecords
     }
     
     @StateObject private var viewModel = NewRecordViewModel()
+    @ObservedObject private var allRecords: RecordModel
     
     @State private var systoliticsPressure = ""
     @State private var diastoliticsPressure = ""
@@ -283,15 +285,22 @@ extension NewRecordView {
               let diastolic = Int16(diastoliticsPressure),
               let pulse = Int16(pulse)
         else { return }
+        let id = UUID().uuidString
         CoreDataManager.shared.addItem(systolic: systolic,
                                        diastolic: diastolic,
                                        pulse: pulse,
                                        date: date,
                                        note: note,
+                                       id: id,
                                        context: viewContext)
+        allRecords.healthData.append(PressureModel(id: id, systolic: Int(systolic),
+                                                   daistolic: Int(diastolic),
+                                                   pulse: Int(pulse),
+                                                   date: date ?? Date(),
+                                                   note: note))
     }
 }
 
-#Preview {
-    NewRecordView()
-}
+//#Preview {
+//    NewRecordView()
+//}

@@ -14,6 +14,7 @@ struct MainView: View {
     @EnvironmentObject var manager: DataManager
     
     @StateObject private var viewModel = MainViewModel()
+    @StateObject private var allRecords = RecordModel()
     @State private var path: [String] = []
 
     @FetchRequest(
@@ -48,8 +49,8 @@ struct MainView: View {
                                        destination: Resource.Destinations.newRecord)
                             .padding(.bottom, 24)
                             timeSelect()
-                            previewData(data: viewModel.getDate(items: records),
-                                        path: $path,
+                            previewData(
+                                allrecords: allRecords, path: $path,
                                         destination: Resource.Destinations.newRecord)
                             notes(viewModel, records)
                         }
@@ -57,13 +58,15 @@ struct MainView: View {
                 }
                 .navigationDestination(for: String.self) { value in
                     if value == Resource.Destinations.newRecord {
-                        NewRecordView()
+                        NewRecordView(allRecords: allRecords)
                             .customNavBar(title: Resource.Strings.addData)
                     }
                 }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color(.mainBackground))
-            
+            .onAppear {
+                allRecords.healthData = getData(viewModel, records)
+            }
         }
     }
 }
@@ -114,12 +117,13 @@ struct MainView: View {
 }
 
 //MARK: - Pressure and pulse data
-@ViewBuilder private func previewData(data: [PressureModel],
+@ViewBuilder private func previewData(allrecords: RecordModel,
                                       path: Binding<[String]>,
                                       destination: String) -> some View {
+    
     VStack {
-        if data.count > 0,
-           data.first?.systolic != 0 && data.first?.daistolic != 0 {
+        if allrecords.healthData.count > 0,
+           allrecords.healthData.first?.systolic != 0 && allrecords.healthData.first?.daistolic != 0 {
             HStack {
                 VStack(alignment: .leading) {
                     Text(Resource.Strings.pressure)
@@ -137,17 +141,16 @@ struct MainView: View {
                 
                 VStack {
                     HStack {
-                        Text("\(data.first?.systolic ?? 0) / \(data.first?.daistolic ?? 0)")
+                        Text("\(allrecords.healthData.first?.systolic ?? 0) / \(allrecords.healthData.first?.daistolic ?? 0)")
                             .font(.custom(Resource.Font.interMedium, size: 18))
                         Text(Resource.Strings.mmHg)
                             .font(.custom(Resource.Font.interRegular, size: 12))
                             .foregroundStyle(.lightGrayText)
                         Spacer()
                     }
-//                    .padding(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
                     
                     HStack {
-                        Text("\(data.first?.pulse ?? 0)")
+                        Text("\(allrecords.healthData.first?.pulse ?? 0)")
                             .font(.custom(Resource.Font.interMedium, size: 18))
                         Text(Resource.Strings.bitsPerMinute)
                             .font(.custom(Resource.Font.interRegular, size: 12))
@@ -197,7 +200,7 @@ struct MainView: View {
             Spacer()
         }
 //MARK: - Chart
-        Chart(data) { point in
+        Chart(allrecords.healthData) { point in
             RuleMark(y: .value("", 50))
                                 .lineStyle(StrokeStyle(lineWidth: 1, dash: [5]))
                                 .foregroundStyle(Color.blue)
