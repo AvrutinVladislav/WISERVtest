@@ -12,9 +12,15 @@ public final class CoreDataManager {
         
     static let shared = CoreDataManager()
     
-    init() {}
+    private init() {}
     
-    func addItem(systolic: Int16, diastolic: Int16, pulse: Int16, date: Date?, note: String?, id: String, context: NSManagedObjectContext) {
+    func addItem(systolic: Int16,
+                 diastolic: Int16,
+                 pulse: Int16,
+                 date: Date?,
+                 note: String?,
+                 id: String,
+                 context: NSManagedObjectContext) {
         let context = context
         let newItem = Record(context: context)
         newItem.date = date

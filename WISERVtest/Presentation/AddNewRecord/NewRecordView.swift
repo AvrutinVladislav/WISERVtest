@@ -34,7 +34,7 @@ struct NewRecordView: View {
     @FocusState private var isFocusedNote: Bool
     @FocusState private var isFocusedSystolitics: Bool
     @FocusState private var isFocusedDiastolitics: Bool
-    @FocusState private var isFocusedPulse: Bool    
+    @FocusState private var isFocusedPulse: Bool
     
     //MARK: - Body
     var body: some View {
@@ -58,207 +58,179 @@ struct NewRecordView: View {
                          xOffset: 42,
                          yOffset: 50)
             VStack {
-                blodPressureAndPulse(systoliticsPressure: $systoliticsPressure,
-                                     isFocusedSystolitics: $isFocusedSystolitics,
-                                     diastoliticsPressure: $diastoliticsPressure,
-                                     isFocusedDiastolitics: $isFocusedDiastolitics,
-                                     pulse: $pulse,
-                                     isFocusedPulse: $isFocusedPulse)
-                
-                dateAndTime(showDatePicker: $showDatePicker,
-                            showTimePicker: $showTimePicker,
-                            viewModel: viewModel,
-                            selectedDate: $date)
-                
-                noteTextEditor(note: $note,
-                               prompt: Resource.Strings.healthСondition,
-                               isFocusedTextEditor: $isFocusedNote,
-                               textEditorHeight: noteHeight,
-                               updateTextEditorHeight: updateTextEditorHeight)
-                
+                blodPressureAndPulse()
+                dateAndTime()
+                noteTextEditor()
                 Spacer()
-                
-                saveButton(systoliticsPressure: $systoliticsPressure,
-                           diastoliticsPressure: $diastoliticsPressure,
-                           saveToCoreData: saveButtonDidTap)
+                saveButton()
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color(.mainBackground))
+            .onAppear {
+                viewModel.updateTextEditorHeight(newText: note,
+                                                 height: $noteHeight)
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(.mainBackground))
-        .onAppear {
-            updateTextEditorHeight(note)
-            
-        }
     }
-}
-
-//MARK: - Blood pressure and pulse
-@ViewBuilder private func blodPressureAndPulse(systoliticsPressure: Binding<String>,
-                                               isFocusedSystolitics: FocusState<Bool>.Binding,
-                                               diastoliticsPressure: Binding<String>,
-                                               isFocusedDiastolitics: FocusState<Bool>.Binding,
-                                               pulse: Binding<String>,
-                                               isFocusedPulse: FocusState<Bool>.Binding) -> some View {
-    HStack {
-        VStack {
-            Text(Resource.Strings.bloodPressure)
-                .font(.custom(Resource.Font.interRegular, size: 16))
-                .foregroundStyle(.mainBlack)
-            HStack {
-                VStack {
-                    Text(Resource.Strings.systolitics)
-                        .font(.custom(Resource.Font.interRegular, size: 12))
-                        .foregroundStyle(.lightGrayText)
-                        .frame(width: 91)
-                    customTextField(text: systoliticsPressure,
-                                    prompt: "120",
-                                    width: 103,
-                                    isFocused: isFocusedSystolitics)
-                }
-                VStack {
-                    Text(Resource.Strings.diastolics)
-                        .font(.custom(Resource.Font.interRegular, size: 12))
-                        .foregroundStyle(.lightGrayText)
-                        .frame(width: 98)
-                    customTextField(text: diastoliticsPressure,
-                                    prompt: "90",
-                                    width: 103,
-                                    isFocused: isFocusedDiastolitics)
-                }
-            }
-        }
-        Spacer()
-        VStack {
-            Text(Resource.Strings.pulse)
-                .font(.custom(Resource.Font.interRegular, size: 16))
-                .foregroundStyle(.mainBlack)
-            Spacer()
-            customTextField(text: pulse,
-                            prompt: "70",
-                            width: 103,
-                            isFocused: isFocusedPulse)
-        }
-    }
-    .frame(height: 89)
-    .padding(.init(top: 24, leading: 16, bottom: 0, trailing: 16))
-}
-
-//MARK: - Date and time
-@ViewBuilder private func dateAndTime(showDatePicker: Binding<Bool>,
-                                      showTimePicker: Binding<Bool>,
-                                      viewModel: NewRecordViewModel,
-                                      selectedDate: Binding<Date?>) -> some View {
-    HStack {
-        VStack {
-            Text(Resource.Strings.date)
-                .font(.custom(Resource.Font.interRegular, size: 16))
-                .foregroundStyle(.mainBlack)
-
-            PickerWithButtons(showPicker: showDatePicker,
-                              date: selectedDate,
-                              prompt: viewModel.prepareDateToPrompt(),
-                              isDate: true)
-        }
-        
-        Spacer(minLength: 24)
-        
-        VStack {
-            Text(Resource.Strings.time)
-                .font(.custom(Resource.Font.interRegular, size: 16))
-                .foregroundStyle(.mainBlack)
-            PickerWithButtons(showPicker: showTimePicker,
-                              date: selectedDate,
-                              prompt: viewModel.prepareTimeToPrompt(),
-                              isDate: false)
-        }
-    }
-    .padding(.init(top: 24, leading: 16, bottom: 24, trailing: 16))
-}
-
-//MARK: - Note
-@ViewBuilder private func noteTextEditor(note: Binding<String>,
-                                         prompt: String,
-                                         isFocusedTextEditor: FocusState<Bool>.Binding,
-                                         textEditorHeight: CGFloat,
-                                         updateTextEditorHeight: @escaping (String) -> Void
-) -> some View {
-    VStack {
+    //MARK: - Blood pressure and pulse
+    @ViewBuilder private func blodPressureAndPulse() -> some View {
         HStack {
-            Text(Resource.Strings.note)
-                .font(.custom(Resource.Font.interRegular, size: 16))
-            Spacer()
-        }
-        .padding(.horizontal, 16)
-        ZStack {
-            if note.wrappedValue.isEmpty {
+            VStack {
+                Text(Resource.Strings.bloodPressure)
+                    .font(.custom(Resource.Font.interRegular, size: 16))
+                    .foregroundStyle(.mainBlack)
                 HStack {
-                    Text(prompt)
-                        .padding(16)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .font(.custom(Resource.Font.interRegular, size: 18))
-                        .foregroundStyle(.textFieldPlaceholder)
-                        .background(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 14))
+                    VStack {
+                        Text(Resource.Strings.systolitics)
+                            .font(.custom(Resource.Font.interRegular, size: 12))
+                            .foregroundStyle(.lightGrayText)
+                            .frame(width: 91)
+                        customTextField(text: $systoliticsPressure,
+                                        prompt: "120",
+                                        width: 103,
+                                        isFocused: $isFocusedSystolitics)
+                    }
+                    VStack {
+                        Text(Resource.Strings.diastolics)
+                            .font(.custom(Resource.Font.interRegular, size: 12))
+                            .foregroundStyle(.lightGrayText)
+                            .frame(width: 98)
+                        customTextField(text: $diastoliticsPressure,
+                                        prompt: "90",
+                                        width: 103,
+                                        isFocused: $isFocusedDiastolitics)
+                    }
                 }
-                .padding(.horizontal, 16)
             }
-                TextEditor( text: note)
+            Spacer()
+            VStack {
+                Text(Resource.Strings.pulse)
+                    .font(.custom(Resource.Font.interRegular, size: 16))
+                    .foregroundStyle(.mainBlack)
+                Spacer()
+                customTextField(text: $pulse,
+                                prompt: "70",
+                                width: 103,
+                                isFocused: $isFocusedPulse)
+            }
+        }
+        .frame(height: 89)
+        .padding(.init(top: 24, leading: 16, bottom: 0, trailing: 16))
+    }
+    
+    //MARK: - Date and time
+    @ViewBuilder private func dateAndTime() -> some View {
+        HStack {
+            VStack {
+                Text(Resource.Strings.date)
+                    .font(.custom(Resource.Font.interRegular, size: 16))
+                    .foregroundStyle(.mainBlack)
+                
+                PickerWithButtons(showPicker: $showDatePicker,
+                                  date: $date,
+                                  prompt: viewModel.prepareDateToPrompt(),
+                                  isDate: true)
+            }
+            
+            Spacer(minLength: 24)
+            
+            VStack {
+                Text(Resource.Strings.time)
+                    .font(.custom(Resource.Font.interRegular, size: 16))
+                    .foregroundStyle(.mainBlack)
+                PickerWithButtons(showPicker: $showTimePicker,
+                                  date: $date,
+                                  prompt: viewModel.prepareTimeToPrompt(),
+                                  isDate: false)
+            }
+        }
+        .padding(.init(top: 24, leading: 16, bottom: 24, trailing: 16))
+    }
+    
+    //MARK: - Note
+    @ViewBuilder private func noteTextEditor() -> some View {
+        VStack {
+            HStack {
+                Text(Resource.Strings.note)
+                    .font(.custom(Resource.Font.interRegular, size: 16))
+                Spacer()
+            }
+            .padding(.horizontal, 16)
+            ZStack {
+                if note.isEmpty {
+                    HStack {
+                        Text(Resource.Strings.healthСondition)
+                            .padding(16)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .font(.custom(Resource.Font.interRegular, size: 18))
+                            .foregroundStyle(.textFieldPlaceholder)
+                            .background(.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 14))
+                    }
+                    .padding(.horizontal, 16)
+                }
+                TextEditor( text: $note)
                     .font(.custom(Resource.Font.interRegular, size: 18))
                     .foregroundStyle(.mainBlack)
-                    .focused(isFocusedTextEditor)
+                    .focused($isFocusedNote)
                     .scrollContentBackground(.hidden)
-                    .frame(minHeight: 45, maxHeight: textEditorHeight)
+                    .frame(minHeight: 45, maxHeight: noteHeight)
                     .overlay {
                         RoundedRectangle(cornerRadius: 14)
-                            .stroke(!isFocusedTextEditor.wrappedValue ? Color.clear : Color.mainBlack, lineWidth: 1)
+                            .stroke(!isFocusedNote ? Color.clear : Color.mainBlack, lineWidth: 1)
                     }
-                    .onChange(of: note.wrappedValue) { newValue in
-                        updateTextEditorHeight(newValue)
+                    .onChange(of: note) { newValue in
+                        viewModel.updateTextEditorHeight(newText: newValue,
+                                                         height: $noteHeight)
                     }
-                    .background(isFocusedTextEditor.wrappedValue || !note.wrappedValue.isEmpty ? Color.white : Color.clear)
+                    .background(isFocusedNote || !note.isEmpty ? Color.white : Color.clear)
                     .cornerRadius(14)
                     .padding(16)
+            }
+            .frame(height: noteHeight)
+            .animation(.easeInOut, value: note)
+            .background(Color.clear)
+            Spacer()
         }
-        .frame(height: textEditorHeight)
-        .animation(.easeInOut, value: note.wrappedValue)
-        .background(Color.clear)
-        Spacer()
     }
-}
-
-//MARK: - Save Button
-@ViewBuilder private func saveButton(systoliticsPressure: Binding<String>,
-                                     diastoliticsPressure: Binding<String>,
-                                     saveToCoreData: @escaping () -> Void) -> some View {
-    HStack {
-        Button {
-            saveToCoreData()
-        } label: {
-            Text(Resource.Strings.save)
-                .font(.custom(Resource.Font.interRegular, size: 18))
-                .foregroundStyle(.white)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 8)
-                .background(systoliticsPressure.wrappedValue.isEmpty
-                            || diastoliticsPressure.wrappedValue.isEmpty ? .saveNewRecordButton.opacity(0.3)
-                                                            : .saveNewRecordButton)
-                .clipShape(RoundedRectangle(cornerRadius: 14))
+    
+    //MARK: - Save Button
+    @ViewBuilder private func saveButton() -> some View {
+        HStack {
+            Button {
+                viewModel.saveButtonDidTap(systolic: Int(systoliticsPressure),
+                                           diastolic: Int(diastoliticsPressure),
+                                           pulse: Int(pulse),
+                                           date: date,
+                                           note: note,
+                                           context: viewContext,
+                                           allRecords: _allRecords)
+            } label: {
+                Text(Resource.Strings.save)
+                    .font(.custom(Resource.Font.interRegular, size: 18))
+                    .foregroundStyle(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 8)
+                    .background(systoliticsPressure.isEmpty || diastoliticsPressure.isEmpty
+                                ? .saveNewRecordButton.opacity(0.3)
+                                : .saveNewRecordButton)
+                    .clipShape(RoundedRectangle(cornerRadius: 14))
+            }
+            .disabled(systoliticsPressure.isEmpty || diastoliticsPressure.isEmpty)
         }
-        .disabled(systoliticsPressure.wrappedValue.isEmpty || diastoliticsPressure.wrappedValue.isEmpty)
+        .padding(.init(top: 0, leading: 16, bottom: 24, trailing: 16))
     }
-    .padding(.init(top: 0, leading: 16, bottom: 24, trailing: 16))
-}
-
-//MARK: - Custom TF
-@ViewBuilder private func customTextField(text: Binding<String>,
-                                          prompt: String,
-                                          width: CGFloat,
-                                          isFocused: FocusState<Bool>.Binding) -> some View {
-    TextField("",
-              text: text,
-              prompt: Text(prompt)
-                .foregroundColor(.textFieldPlaceholder)
-    )
+    
+    //MARK: - Custom TF
+    @ViewBuilder private func customTextField(text: Binding<String>,
+                                              prompt: String,
+                                              width: CGFloat,
+                                              isFocused: FocusState<Bool>.Binding) -> some View {
+        TextField("",
+                  text: text,
+                  prompt: Text(prompt)
+            .foregroundColor(.textFieldPlaceholder)
+        )
         .padding(16)
         .focused(isFocused)
         .frame(width: width)
@@ -270,37 +242,7 @@ struct NewRecordView: View {
         .cornerRadius(16)
         .font(.custom(Resource.Font.interRegular, size: 18))
         .keyboardType(.numberPad)
-}
-
-//MARK: - Extension
-extension NewRecordView {
-    func updateTextEditorHeight(_ newText: String) {
-        let lineHeight: CGFloat = 20
-        let newHeight = max(45, CGFloat(newText.split(separator: "\n").count) * lineHeight)
-        $noteHeight.wrappedValue = newHeight > 250 ? 250 : newHeight
     }
     
-    func saveButtonDidTap() {
-        guard let systolic = Int16(systoliticsPressure),
-              let diastolic = Int16(diastoliticsPressure),
-              let pulse = Int16(pulse)
-        else { return }
-        let id = UUID().uuidString
-        CoreDataManager.shared.addItem(systolic: systolic,
-                                       diastolic: diastolic,
-                                       pulse: pulse,
-                                       date: date,
-                                       note: note,
-                                       id: id,
-                                       context: viewContext)
-        allRecords.healthData.append(PressureModel(id: id, systolic: Int(systolic),
-                                                   daistolic: Int(diastolic),
-                                                   pulse: Int(pulse),
-                                                   date: date ?? Date(),
-                                                   note: note))
-    }
 }
 
-//#Preview {
-//    NewRecordView()
-//}

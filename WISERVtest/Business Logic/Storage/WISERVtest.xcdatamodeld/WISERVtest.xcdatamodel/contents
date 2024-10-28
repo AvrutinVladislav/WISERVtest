@@ -2,7 +2,7 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23231" systemVersion="24A348" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Record" representedClassName="Record" syncable="YES" codeGenerationType="class">
         <attribute name="daistolic" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="date" attributeType="Date" defaultDateTimeInterval="751214520" usesScalarValueType="NO"/>
+        <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" attributeType="String"/>
         <attribute name="note" optional="YES" attributeType="String"/>
         <attribute name="pulse" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
