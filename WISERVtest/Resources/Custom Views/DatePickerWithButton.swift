@@ -64,6 +64,7 @@ struct PickerWithButtons: View {
             DatePicker(
                 "",
                 selection: $selectedDate,
+                in: Date()...,
                 displayedComponents: isDate ? .date : .hourAndMinute
             )
             .datePickerStyle(.graphical)
@@ -73,6 +74,7 @@ struct PickerWithButtons: View {
             DatePicker(
                 "",
                 selection: $selectedDate,
+                in: Date()...,
                 displayedComponents: isDate ? .date : .hourAndMinute
             )
             .datePickerStyle(.wheel)

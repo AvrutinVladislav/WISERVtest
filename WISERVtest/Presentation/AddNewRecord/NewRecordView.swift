@@ -11,6 +11,7 @@ struct NewRecordView: View {
     
     @EnvironmentObject var manager: DataManager
     @Environment(\.managedObjectContext) var viewContext
+    @Environment(\.presentationMode) var presentationMode
     
     init(allRecords: RecordModel) {
         UITextView.appearance().textContainerInset = UIEdgeInsets(top: 10, left: 16, bottom: 10, right: 16)
@@ -85,20 +86,20 @@ struct NewRecordView: View {
                             .font(.custom(Resource.Font.interRegular, size: 12))
                             .foregroundStyle(.lightGrayText)
                             .frame(width: 91)
-                        customTextField(text: $systoliticsPressure,
-                                        prompt: "120",
+                        CustomTextField(note: $systoliticsPressure,
+                                        isFocused: $isFocusedSystolitics,
                                         width: 103,
-                                        isFocused: $isFocusedSystolitics)
+                                        prompt: "120")
                     }
                     VStack {
                         Text(Resource.Strings.diastolics)
                             .font(.custom(Resource.Font.interRegular, size: 12))
                             .foregroundStyle(.lightGrayText)
                             .frame(width: 98)
-                        customTextField(text: $diastoliticsPressure,
-                                        prompt: "90",
+                        CustomTextField(note: $diastoliticsPressure,
+                                        isFocused: $isFocusedDiastolitics,
                                         width: 103,
-                                        isFocused: $isFocusedDiastolitics)
+                                        prompt: "90")
                     }
                 }
             }
@@ -108,10 +109,10 @@ struct NewRecordView: View {
                     .font(.custom(Resource.Font.interRegular, size: 16))
                     .foregroundStyle(.mainBlack)
                 Spacer()
-                customTextField(text: $pulse,
-                                prompt: "70",
+                CustomTextField(note: $pulse,
+                                isFocused: $isFocusedPulse,
                                 width: 103,
-                                isFocused: $isFocusedPulse)
+                                prompt: "70")
             }
         }
         .frame(height: 89)
@@ -205,6 +206,7 @@ struct NewRecordView: View {
                                            note: note,
                                            context: viewContext,
                                            allRecords: _allRecords)
+                self.presentationMode.wrappedValue.dismiss()
             } label: {
                 Text(Resource.Strings.save)
                     .font(.custom(Resource.Font.interRegular, size: 18))
@@ -219,29 +221,6 @@ struct NewRecordView: View {
             .disabled(systoliticsPressure.isEmpty || diastoliticsPressure.isEmpty)
         }
         .padding(.init(top: 0, leading: 16, bottom: 24, trailing: 16))
-    }
-    
-    //MARK: - Custom TF
-    @ViewBuilder private func customTextField(text: Binding<String>,
-                                              prompt: String,
-                                              width: CGFloat,
-                                              isFocused: FocusState<Bool>.Binding) -> some View {
-        TextField("",
-                  text: text,
-                  prompt: Text(prompt)
-            .foregroundColor(.textFieldPlaceholder)
-        )
-        .padding(16)
-        .focused(isFocused)
-        .frame(width: width)
-        .overlay(content: {
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(isFocused.wrappedValue ? Color(.mainBlack) : Color(.mainBackground))
-        })
-        .background(.white)
-        .cornerRadius(16)
-        .font(.custom(Resource.Font.interRegular, size: 18))
-        .keyboardType(.numberPad)
     }
     
 }

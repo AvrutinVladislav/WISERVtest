@@ -295,7 +295,7 @@ struct MainView: View {
                 Text(Resource.Strings.note)
                     .font(.custom(Resource.Font.interMedium, size: 16))
                 Spacer()
-                Image(systemName: viewModel.isNoteEmpty(items: records) ? "plus" : "chevron.right")
+                Image(systemName: viewModel.isNoteEmpty(items: allRecords.healthData) ? "plus" : "chevron.right")
                     .frame(width: 18, height: 18)
                     .foregroundStyle(.noteArrowGray)
                     .padding(.trailing, 28)
@@ -305,9 +305,9 @@ struct MainView: View {
             Divider()
                 .padding(.init(top: 0, leading: 16, bottom: 8, trailing: 16))
             
-            if !viewModel.isNoteEmpty(items: records) {
+            if !viewModel.isNoteEmpty(items: allRecords.healthData) {
                 HStack {
-                    Text(viewModel.prepareDate(items: records))
+                    Text(viewModel.prepareDate(items: allRecords.healthData))
                         .padding(.leading, 16)
                         .foregroundStyle(.lightGrayText)
                         .font(.custom(Resource.Font.interRegular, size: 12))
@@ -316,12 +316,12 @@ struct MainView: View {
             }
             
             HStack {
-                Text(viewModel.isNoteEmpty(items: records)
+                Text(viewModel.isNoteEmpty(items: allRecords.healthData)
                      ? Resource.Strings.healthСondition
-                     : viewModel.prepareNote(items: records))
+                     : viewModel.prepareNote(items: allRecords.healthData))
                 .padding(.init(top: 0, leading: 16, bottom: 16, trailing: 16))
                 .font(.custom(Resource.Font.interRegular, size: 14))
-                .foregroundStyle(viewModel.isNoteEmpty(items: records) ? .lightGrayText : .mainBlack)
+                .foregroundStyle(viewModel.isNoteEmpty(items: allRecords.healthData) ? .lightGrayText : .mainBlack)
                 Spacer()
             }
         }

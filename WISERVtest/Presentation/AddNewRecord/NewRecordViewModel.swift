@@ -11,7 +11,14 @@ import CoreData
 
 class NewRecordViewModel: ObservableObject {
     
-    //Save data to CoreData
+    /// Сохранение даты в CoreData и в массив записей
+    /// - Parameter systolic: систолическое давление
+    /// - Parameter diastolic: диастолическое давление
+    /// - Parameter pulse: пульс
+    /// - Parameter date: дата проведения замера и добавления
+    /// - Parameter note: заметка
+    /// - Parameter context: контекст для работы CoreData
+    /// - Parameter allRecords: локальный массив записей
     func saveButtonDidTap(systolic: Int?,
                           diastolic: Int?,
                           pulse: Int?,
@@ -38,7 +45,9 @@ class NewRecordViewModel: ObservableObject {
         }
     }
     
-    //Updates the height of the note input field when entering long text
+    /// Обновление высоты поля ввода заметки при длинном тексте
+    /// - Parameter newText: вводимый текст
+    /// - Parameter height: высота поля ввода
     func updateTextEditorHeight(newText: String,
                                 height: Binding<CGFloat>) {
         let lineHeight: CGFloat = 20
@@ -46,7 +55,8 @@ class NewRecordViewModel: ObservableObject {
         height.wrappedValue = newHeight > 250 ? 250 : newHeight
     }
     
-    //Prepare placeholder for date field
+    /// Подготовка  подсказки в поле ввода даты замера
+    /// - Returns: возвращает строку вида 30.10.2024
     func prepareDateToPrompt() -> String {
         let date = Date()
         let formatter = DateFormatter()
@@ -54,7 +64,8 @@ class NewRecordViewModel: ObservableObject {
         return formatter.string(from: date)
     }
     
-    //Prepare placeholder for time field
+    /// Подготовка подсказки для поля ввода времмени замера
+    /// - Returns: возвращает строку вида 12:00
     func prepareTimeToPrompt() -> String {
         let date = Date()
         let formatter = DateFormatter()
