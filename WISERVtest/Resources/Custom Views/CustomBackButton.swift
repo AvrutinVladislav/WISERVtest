@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CustomNavBar: ViewModifier {
     
-    @Environment(\.presentationMode) var presentationMode
+    @EnvironmentObject private var router: Router
     var title: String?
 
     func body(content: Content) -> some View {
@@ -21,7 +21,7 @@ struct CustomNavBar: ViewModifier {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: {
-                        self.presentationMode.wrappedValue.dismiss()
+                        router.pop()
                     }) {
                         HStack {
                             Image(systemName: "chevron.left")
