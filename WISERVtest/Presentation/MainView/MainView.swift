@@ -12,10 +12,10 @@ struct MainView: View {
     
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var manager: DataManager
+    @EnvironmentObject private var router: Router
     
     @StateObject private var viewModel = MainViewModel()
     @StateObject private var allRecords = RecordModel()
-    @State private var path: [String] = []
     
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \Record.date, ascending: false)],
@@ -23,7 +23,7 @@ struct MainView: View {
     private var records: FetchedResults<Record>
     
     var body: some View {
-        NavigationStack(path: $path) {
+        RouterView {
             ScrollView {
                 ZStack {
                     GradientView(colors: [.gradientRed],
@@ -51,12 +51,6 @@ struct MainView: View {
                         previewData()
                         notes()
                     }
-                }
-            }
-            .navigationDestination(for: String.self) { value in
-                if value == Resource.Destinations.newRecord {
-                    NewRecordView(allRecords: allRecords)
-                        .customNavBar(title: Resource.Strings.addData)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -88,7 +82,7 @@ struct MainView: View {
                 .offset(x: 30)
                 Spacer()
                 Button {
-                    path.append(Resource.Destinations.newRecord)
+                    router.push(.goToNewRecordView(allRecords))
                 } label: {
                     Image(.addPressure)
                 }
@@ -268,7 +262,7 @@ struct MainView: View {
             HStack {
                 Spacer()
                 Button {
-                    path.append(Resource.Destinations.newRecord)
+                    router.push(.goToNewRecordView(allRecords))
                 } label: {
                     Text(Resource.Strings.addData)
                         .padding(.init(top: 8, leading: 16, bottom: 8, trailing: 16))
