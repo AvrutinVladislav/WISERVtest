@@ -83,7 +83,7 @@ struct MainView: View {
                     Text(Resource.Strings.pressure)
                         .font(.custom(Resource.Font.interMedium, size: 18))
                         .fontWeight(.medium)
-                    Text(Date(), formatter: viewModel.itemFormatter)
+                    Text(viewModel.translateMonth(Date()))
                 }
                 .offset(x: 30)
                 Spacer()
