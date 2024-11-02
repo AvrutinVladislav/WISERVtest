@@ -71,6 +71,21 @@ struct NewRecordView: View {
                 viewModel.updateTextEditorHeight(newText: note,
                                                  height: $noteHeight)
             }
+            if showDatePicker {
+                Color.black.opacity(0.3)
+                    .edgesIgnoringSafeArea(.all)
+                
+                DateTimeSheetView(date: $date,
+                                  showPicker: $showDatePicker,
+                                  isDate: true)
+            }
+            if showTimePicker {
+                Color.black.opacity(0.3)
+                    .edgesIgnoringSafeArea(.all)
+                DateTimeSheetView(date: $date,
+                                  showPicker: $showTimePicker,
+                                  isDate: false)
+            }
         }
     }
     //MARK: - Blood pressure and pulse
@@ -127,10 +142,10 @@ struct NewRecordView: View {
                     .font(.custom(Resource.Font.interRegular, size: 16))
                     .foregroundStyle(.mainBlack)
                 
-                PickerWithButtons(showPicker: $showDatePicker,
-                                  date: $date,
-                                  prompt: viewModel.prepareDateToPrompt(),
-                                  isDate: true)
+                DateTimeButton(showPicker: $showDatePicker,
+                               date: $date,
+                               prompt: viewModel.prepareDateToPrompt(),
+                               isDate: true)
             }
             
             Spacer(minLength: 24)
@@ -139,10 +154,10 @@ struct NewRecordView: View {
                 Text(Resource.Strings.time)
                     .font(.custom(Resource.Font.interRegular, size: 16))
                     .foregroundStyle(.mainBlack)
-                PickerWithButtons(showPicker: $showTimePicker,
-                                  date: $date,
-                                  prompt: viewModel.prepareTimeToPrompt(),
-                                  isDate: false)
+                DateTimeButton(showPicker: $showTimePicker,
+                               date: $date,
+                               prompt: viewModel.prepareTimeToPrompt(),
+                               isDate: false)
             }
         }
         .padding(.init(top: 24, leading: 16, bottom: 24, trailing: 16))
