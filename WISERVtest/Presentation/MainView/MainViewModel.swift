@@ -10,13 +10,16 @@ import SwiftUI
 
 final class MainViewModel: ObservableObject {
 
-    ///Создается форматтер для Header для приведения даты к  виду 30 октября 2024
-    let itemFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = Locale.autoupdatingCurrent
-        formatter.dateFormat = "dd MMMM yyyy"
-        return formatter
-    }()
+    /// Создается форматтер для Header для приведения даты к  виду  Октября 2024
+    /// - Parameter date: дата для конвертации
+    /// - Returns: возвращает дату в формате Октября 2024
+    func translateMonth(_ date: Date) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MMMM yyyy"
+        dateFormatter.locale = Locale(identifier: "ru_RU")
+        let result = dateFormatter.string(from: date)
+        return result.prefix(1).uppercased() + result.dropFirst()
+    }
     
     ///Конвертирует данные, полученные из базы данных в массив элементов PressureModel
     /// - Parameter items: данные из кордаты, полученные в результате FeathRequest
