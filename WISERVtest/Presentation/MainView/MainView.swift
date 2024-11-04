@@ -194,7 +194,7 @@ struct MainView: View {
                 Spacer()
             }
             //MARK: - Chart
-            Chart(healthData) { point in
+            Chart {
                 RuleMark(y: .value("", 50))
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [5]))
                     .foregroundStyle(Color.blue)
@@ -204,19 +204,35 @@ struct MainView: View {
                 RuleMark(x: .value("", 0))
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [5]))
                     .foregroundStyle(Color.mainBlack.opacity(0.2))
-                PointMark(
-                    x: .value("", viewModel.formateDateFromChart(point.date)),
-                    y: .value("Systolic", point.systolic)
-                )
-                .foregroundStyle(.chartYellow)
                 
-                PointMark(
-                    x: .value("", viewModel.formateDateFromChart(point.date)),
-                    y: .value("Diastolic", point.daistolic)
-                )
-                .foregroundStyle(.chartCoral)
+                ForEach(healthData) { point in
+                    LineMark(
+                        x: .value("", viewModel.formateDateFromChart(point.date)),
+                        y: .value("", point.systolic),
+                        series: .value("Pressure", "Systolic")
+                    )
+                    .foregroundStyle(.chartCoral)
+                    .symbol {
+                        Circle()
+                            .fill(Color.chartCoral)
+                            .frame(width: 10)
+                    }
+                    .interpolationMethod(.catmullRom)
+                }
+                ForEach(healthData) { point in
+                    LineMark(
+                        x: .value("", viewModel.formateDateFromChart(point.date)),
+                        y: .value("", point.daistolic)
+                    )
+                    .foregroundStyle(.chartYellow)
+                    .symbol {
+                        Circle()
+                            .fill(Color.chartYellow)
+                            .frame(width: 10)
+                    }
+                    .interpolationMethod(.catmullRom)
+                }
             }
-            
             .frame(height: 200)
             .padding(16)
             .chartPlotStyle { plotArea in
