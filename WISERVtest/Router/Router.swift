@@ -12,12 +12,14 @@ final class Router: ObservableObject {
     
     @Published var path = NavigationPath()
     
+    /// Переход на следующий экран
     @inlinable
     @inline(__always)
     func push(_ appRoute: Route) {
         path.append(appRoute)
     }
     
+    /// Возврат на предыдущий экран
     @inlinable
     @inline(__always)
     func pop() {
@@ -25,6 +27,7 @@ final class Router: ObservableObject {
         path.removeLast()
     }
     
+    /// Возврат на главный экран
     @inlinable
     @inline(__always)
     func popToRoot() {
