@@ -9,13 +9,6 @@ import Foundation
 import SwiftUI
 
 final class MainViewModel: ObservableObject {
-    
-    var data: [PressureModel] = [
-        PressureModel(id: "4", systolic: 112, daistolic: 80, pulse: 85, date: Date().addingTimeInterval(3600 * 2), note: nil),
-        PressureModel(id: "5", systolic: 149, daistolic: 64, pulse: 85, date: Date().addingTimeInterval(3600 * 4), note: nil),
-        PressureModel(id: "6", systolic: 187, daistolic: 76, pulse: 85, date: Date().addingTimeInterval(3600 * 8), note: nil),
-        PressureModel(id: "7", systolic: 134, daistolic: 66, pulse: 85, date: Date().addingTimeInterval(3600 * 10), note: nil),
-    ]
 
     /// Создается форматтер для Header для приведения даты к  виду  Октября 2024
     /// - Parameter date: дата для конвертации
