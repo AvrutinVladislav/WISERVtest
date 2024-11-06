@@ -31,7 +31,10 @@ struct DateTimeButton: View {
             })
         }
     }
-    
+    /// Формотирование даты  в строку
+    /// - Parameter date: исходная дата
+    /// - Parameter isDate: флаг, показывающий в дату или время необходимо сконвертировать
+    /// - Returns: возвращает время или дату в виде строки
     func convertDateToString(date: Date?, isDate: Bool) -> String {
         guard let date else { return ""}
         let formatter = DateFormatter()

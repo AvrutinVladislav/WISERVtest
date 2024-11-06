@@ -68,6 +68,8 @@ struct MainView: View {
     }
     
     //MARK: - Header
+    /// Создание view отображения логотипа, времени  и кнопки добавления замера
+    /// - Returns: возвращает созданное view
     @ViewBuilder private func headerView() -> some View {
         VStack {
             HStack {
@@ -99,6 +101,8 @@ struct MainView: View {
     }
     
     //MARK: - Time selector
+    /// Создание view отображения бара выбора отрезка отображаемого времени
+    /// - Returns: возвращает созданное view
     @ViewBuilder private func timeSelect() -> some View {
         HStack {
             timeButton(Resource.Strings.day, true)
@@ -113,6 +117,8 @@ struct MainView: View {
     }
     
     //MARK: - Pressure and pulse data
+    /// Создание view отображения давления и пульса
+    /// - Returns: возвращает созданное view
     @ViewBuilder private func previewData() -> some View {
         let healthData = allRecords.healthData
         VStack {
@@ -194,6 +200,7 @@ struct MainView: View {
                 Spacer()
             }
             //MARK: - Chart
+            /// Создание графика давления за выбранные промежуток времени
             Chart {
                 RuleMark(y: .value("", 50))
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [5]))
@@ -303,6 +310,8 @@ struct MainView: View {
     }
     
     //MARK: - Notes
+    /// Создание view отображения заметки
+    /// - Returns: возвращает созданное view
     @ViewBuilder private func notes() -> some View {
         VStack {
             HStack {
@@ -347,6 +356,8 @@ struct MainView: View {
     }
         
     //MARK: - Custom elements
+    /// Создание кнопки выбора временного отрезки
+    /// - Returns: возвращает созданное view
     @ViewBuilder private func timeButton(_ title: String, _ isSelected: Bool) -> some View {
         Button {
             

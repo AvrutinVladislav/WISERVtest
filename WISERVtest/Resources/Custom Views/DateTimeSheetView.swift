@@ -49,6 +49,9 @@ struct DateTimeSheetView: View {
         .padding()
     }
     
+    /// Создание пикера времени и даты
+    /// - Parameter isDate: флаг, показывающий пикер даты или времени стоит вывести
+    /// - Returns: возвращает пикер
     @ViewBuilder private func picker(isDate: Bool) -> some View {
         if isDate {
             DatePicker(
