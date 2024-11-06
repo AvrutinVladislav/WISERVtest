@@ -14,6 +14,14 @@ public final class CoreDataManager {
     
     private init() {}
     
+    /// Сохранение нового замера в Core Data
+    /// - Parameter systolic: систолическое давление
+    /// - Parameter diastolic: диастолическое давление
+    /// - Parameter pulse: пульс
+    /// - Parameter date: дата проведения замера и добавления
+    /// - Parameter note: заметка
+    /// - Parameter id: id замера
+    /// - Parameter context: контекст для работы CoreData
     func addItem(systolic: Int16,
                  diastolic: Int16,
                  pulse: Int16,

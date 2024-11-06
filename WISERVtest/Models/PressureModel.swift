@@ -14,10 +14,4 @@ struct PressureModel: Identifiable {
     var pulse: Int?
     var date: Date
     var note: String?
-    
-    var hours: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH"
-        return formatter.string(from: date)
-    }
 }

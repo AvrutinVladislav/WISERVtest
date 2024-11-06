@@ -89,6 +89,8 @@ struct NewRecordView: View {
         }
     }
     //MARK: - Blood pressure and pulse
+    /// Создание view ввода давления и пульса
+    /// - Returns: возвращает созданное view
     @ViewBuilder private func blodPressureAndPulse() -> some View {
         HStack {
             VStack {
@@ -135,6 +137,8 @@ struct NewRecordView: View {
     }
     
     //MARK: - Date and time
+    /// Создание view ввода даты и времени
+    /// - Returns: возвращает созданное view
     @ViewBuilder private func dateAndTime() -> some View {
         HStack {
             VStack {
@@ -164,6 +168,8 @@ struct NewRecordView: View {
     }
     
     //MARK: - Note
+    /// Создание view создания заметки
+    /// - Returns: возвращает созданное view
     @ViewBuilder private func noteTextEditor() -> some View {
         VStack {
             HStack {
@@ -211,6 +217,8 @@ struct NewRecordView: View {
     }
     
     //MARK: - Save Button
+    /// Создание кнопки сохранения
+    /// - Returns: возвращает созданное view
     @ViewBuilder private func saveButton() -> some View {
         HStack {
             Button {
