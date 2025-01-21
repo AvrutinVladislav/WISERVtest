@@ -11,7 +11,7 @@ struct NewRecordView: View {
     
     @EnvironmentObject var manager: DataManager
     @Environment(\.managedObjectContext) var viewContext
-    @Environment(\.presentationMode) var presentationMode
+    @EnvironmentObject private var router: Router
     
     init(allRecords: RecordModel) {
         UITextView.appearance().textContainerInset = UIEdgeInsets(top: 10, left: 16, bottom: 10, right: 16)
@@ -229,7 +229,7 @@ struct NewRecordView: View {
                                            note: note,
                                            context: viewContext,
                                            allRecords: _allRecords)
-                self.presentationMode.wrappedValue.dismiss()
+                router.pop()
             } label: {
                 Text(Resource.Strings.save)
                     .font(.custom(Resource.Font.interRegular, size: 18))

@@ -66,8 +66,8 @@ final class MainViewModel: ObservableObject {
     }
     
     /// Получение часа создания записи давления в формате Int для соотношения с осью Х графика давления
-    /// - Parameter hour: дата добавления записи
-    /// - Returns: час в формате 24 часов
+    /// - Parameter hour: дата добавления записи!!!
+    /// - Returns: час в формате 24 часов!!!
     func formateDateFromChart(_ hour: Date) -> Int {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH"

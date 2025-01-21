@@ -10,10 +10,11 @@ import SwiftUI
 @main
 struct WISERVtestApp: App {
     @StateObject private var manager: DataManager = DataManager()
+    @StateObject private var router: Router = Router()
 
     var body: some Scene {
         WindowGroup {
-            MainView()
+            RootView()
                 .environment(\.managedObjectContext, manager.container.viewContext)
         }
     }
